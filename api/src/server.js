@@ -1,7 +1,15 @@
+//Imports
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
-app.get("/",(req, res)=> res.send("Página home"))
+//Use
+require('dotenv').config()
+app.use(morgan('dev'))
 
-const port = process.env.PORT || 8080
+//Routes
+app.use("/", require('./routes'))
+
+//Server connection
+const port = process.env.PORT
 app.listen(port, () => console.log(`Server running on port ${port}!`))
