@@ -1,8 +1,10 @@
-const knex = require('../database/config')
-
+const News = require("../models/News")
+const knex  =require("../database/config")
 class NewsController{
     
-    findAll(req, res){
+    async findAll(req, res){
+        let news = await knex.select().table("news")
+        console.log(news)
         res.send("Todas as notícias")
     }
     
@@ -10,9 +12,9 @@ class NewsController{
 
         /*
         await knex.insert({
-            id: 1,
-            title: "auhduaduaudauwd",
-            slug: "a-a-d-3w-d2-ed-a",
+            id: 2,
+            title: "awdwd",
+            slug: "a-a-dwdaa",
             body: "ahusduh asdhu ahud huasd huashud ahusdhuas ",
             author: "joaozin",
             created_at: '2021-10-01'

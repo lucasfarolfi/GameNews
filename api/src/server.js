@@ -6,6 +6,8 @@ const app = express()
 //Use
 require('dotenv').config()
 app.use(morgan('dev'))
+app.use(express.urlencoded({extended:true}))
+app.use(express.json())
 
 //Routes
 app.use("/", require('./routes'))
