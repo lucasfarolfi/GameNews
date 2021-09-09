@@ -6,6 +6,22 @@ class UserController{
         res.status(200).json(users)
     }
 
+    async findUser(req, res){
+        let {id} = req.params
+
+        if(id == undefined || id == '' || id == isNaN(id)){
+            return res.status(401).json({msg: "Dados inválidos"})
+        }
+
+        let userExists = await User.findById(parseInt(id))
+        if(!userExists){
+            return res.status(404).json({msg: "Usuário não encontrado."})
+        }
+
+        let user = await User.findOne(parseInt(id))
+        res.status(200).json(user[0])
+    }
+
     async create(req, res){
         let {name, email,password} = req.body
 
@@ -31,9 +47,10 @@ class UserController{
     async updateUser(req, res){
         let id = req.params.id
         let {name, email, password, role} = req.body
+        console.log(password)
 
         if((name == undefined || name == '') || (email == undefined || email == '')
-        || (password == undefined || password == '') || (role == undefined || role == '')){
+        || (role == undefined || role == '')){
             return res.status(401).json({msg: "Dados inválidos."})
         }
 

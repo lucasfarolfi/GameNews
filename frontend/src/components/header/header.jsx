@@ -28,6 +28,7 @@ export default function Header(){
                             <Link href="/" passHref><Nav.Link>Notícias</Nav.Link></Link>
                             <Link href="/" passHref><Nav.Link>Categorias</Nav.Link></Link>
                             <Link href="/login" passHref><Nav.Link>Login</Nav.Link></Link>
+                            <Link href="/cadastro" passHref><Nav.Link>Cadastre-se</Nav.Link></Link>
                             <NavDropdown title="Admin" id="navbarScrollingDropdown">
                                 <Link href="/admin/noticias" passHref><NavDropdown.Item>Notícias</NavDropdown.Item></Link>
                                 <Link href="/admin/categorias" passHref><NavDropdown.Item>Categorias</NavDropdown.Item></Link>

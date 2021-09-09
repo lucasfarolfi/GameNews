@@ -27,20 +27,37 @@ class User{
 
     async update(id, name, email, password, role){
         let slug = Slugify(name).toLowerCase()
-        let hash = await bcrypt.hash(password, 10)
 
-        try{
-            await database.where({id}).update({
-                name,
-                slug,
-                email,
-                password: hash,
-                role,
-                updated_at: new Date()
-            }).table("user")
-        }catch(error){
-            console.log(error)
+        if(password == undefined || password == ''){
+            try{
+                await database.where({id}).update({
+                    name,
+                    slug,
+                    email,
+                    role,
+                    updated_at: new Date()
+                }).table("user")
+            }catch(error){
+                console.log(error)
+            }
         }
+        else{
+            let hash = await bcrypt.hash(password, 10)
+
+            try{
+                await database.where({id}).update({
+                    name,
+                    slug,
+                    email,
+                    password: hash,
+                    role,
+                    updated_at: new Date()
+                }).table("user")
+            }catch(error){
+                console.log(error)
+            }
+        }
+        
     }
 
     async updatePassword(email,password){
@@ -55,6 +72,14 @@ class User{
     async findAll(){
         try{
             return await database.select().table("user")
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+    async findOne(id){
+        try{
+            return await database.select().table("user").where({id})
         }catch(error){
             console.log(error)
         }
