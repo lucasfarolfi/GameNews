@@ -110,5 +110,36 @@ class User{
             return false
         }
     }
+
+    async getByEmail(email){
+        try{
+            return await database.select().table("user").where({email})
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+    async validateUser(email, password){
+        let user = await this.getByEmail(email)
+        user = user[0]
+
+        try{
+            let isPassword = await bcrypt.compare(password, user.password)
+
+            if(!isPassword){
+                return undefined
+            }
+
+            return {
+                id:user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        }catch(error){
+            console.log(error)
+        }
+        
+    }
 }
 module.exports = new User()

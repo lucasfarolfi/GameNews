@@ -19,5 +19,6 @@ Router.post("/usuario", UserController.create)
 Router.delete("/usuario/:id", UserController.delete)
 Router.put("/usuario", UserController.updatePassword)
 Router.patch("/admin/usuario/:id", UserController.updateUser)
+Router.post("/login", UserController.login)
 
 module.exports = Router

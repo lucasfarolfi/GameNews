@@ -100,6 +100,25 @@ class UserController{
         await User.delete(parseInt(id))
         res.status(200).json({status: "Usuário deletado com sucesso."})
     }
+    
+    async login(req, res){
+        let {email, password} = req.body
 
+        if((email == undefined || email == '') || (password == undefined || password == '')){
+            return res.status(401).json({msg: "Dados inválidos."})
+        }
+
+        let findEmail = await User.findByEmail(email)
+        if(!findEmail){
+            return res.status(404).json({msg: "Usuário incorreto ou não existe."})
+        }
+
+        let user = await User.validateUser(email, password)
+        if(user == undefined){
+            return res.status(406).json({msg: "Senha incorreta."})
+        }
+        
+        res.status(200).json({user: user})
+    }
 }
 module.exports = new UserController()

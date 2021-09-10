@@ -29,11 +29,9 @@ export default function Usuarios(){
                 <main>
                     <h1>Usuários</h1>
 
-                    <Link href="/cadastro" passHref><Button variant="success">Cadastrar</Button></Link>
-
-                    <hr/>
-
-                    <table className="table">
+                    <Link href="/cadastro" passHref><Button variant="outline-primary">Cadastrar</Button></Link>
+                        <div className="table-responsive-sm">
+                        <table className="table table-striped mt-5">
                         <thead>
                             <tr>
                                 <th scope="col">id</th>
@@ -53,12 +51,16 @@ export default function Usuarios(){
                                     <td scope="col">{user.slug}</td>
                                     <td scope="col">{user.email}</td>
                                     <td scope="col">{user.role}</td>
-                                    <td scope="col"><Link href="/admin/usuario/editar/[id]" as={`/admin/usuario/editar/${user.id}`}><Button className="mx-1" variant="warning">Editar</Button></Link>
+                                    <td scope="col"><Link href="/admin/usuario/editar/[id]" as={`/admin/usuario/editar/${user.id}`}><Button className="m-1" variant="warning">Editar</Button></Link>
                                     <Button 
                                     variant="danger"
                                     onClick={ async () => {
-                                        await deleteUser(user.id)
-                                        window.location.href = "http://localhost:3000/admin/usuarios"
+                                        let confirmation = confirm("Você deseja mesmo excluir esse usuário ?")
+                                        if(confirmation){
+                                            await deleteUser(user.id)
+                                            window.location.href = "http://localhost:3000/admin/usuarios"
+                                        }
+                                    
                                     }} 
                                     >Excluir</Button></td>
                                     </tr>
@@ -67,6 +69,8 @@ export default function Usuarios(){
                             })}
                         </tbody>
                     </table>
+                        </div>
+                    
                     
                 </main>
             </Container>
