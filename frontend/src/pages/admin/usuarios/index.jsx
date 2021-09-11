@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Router from 'next/router';
 import { useEffect, useState } from "react";
 import {getUsers, deleteUser} from '../../../services/users'
+import { getDate } from "../../../utils/date";
 
 export default function Usuarios(){
 
@@ -34,12 +35,13 @@ export default function Usuarios(){
                         <table className="table table-striped mt-5">
                         <thead>
                             <tr>
-                                <th scope="col">id</th>
-                                <th scope="col">nome</th>
-                                <th scope="col">slug</th>
-                                <th scope="col">email</th>
-                                <th scope="col">cargo</th>
-                                <th scope="col">ações</th>
+                                <th scope="col">Id</th>
+                                <th scope="col">Nome</th>
+                                <th scope="col">Slug</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Cargo</th>
+                                <th scope="col">Criação</th>
+                                <th scope="col">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -51,6 +53,7 @@ export default function Usuarios(){
                                     <td scope="col">{user.slug}</td>
                                     <td scope="col">{user.email}</td>
                                     <td scope="col">{user.role}</td>
+                                    <td scope="col">{getDate(user.created_at)}</td>
                                     <td scope="col"><Link href="/admin/usuario/editar/[id]" as={`/admin/usuario/editar/${user.id}`}><Button className="m-1" variant="warning">Editar</Button></Link>
                                     <Button 
                                     variant="danger"

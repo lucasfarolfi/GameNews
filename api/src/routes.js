@@ -11,6 +11,8 @@ Router.post("/noticia", NewsController.create)
 Router.get("/categorias", CategoryController.findAll)
 Router.post("/categoria", CategoryController.create)
 Router.get("/categoria/:id", CategoryController.findOne)
+Router.put("/categoria/:id", CategoryController.update)
+Router.delete("/categoria/:id", CategoryController.delete)
 
 //User
 Router.get("/usuarios", UserController.findAll)
