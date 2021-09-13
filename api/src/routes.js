@@ -5,7 +5,10 @@ const UserController = require('./controllers/UserController')
 
 //News
 Router.get("/noticias", NewsController.findAll)
+Router.get("/noticia/:id", NewsController.getById)
 Router.post("/noticia", NewsController.create)
+Router.delete("/noticia/:id", NewsController.delete)
+Router.patch("/noticia/:id", NewsController.update)
 
 //Category
 Router.get("/categorias", CategoryController.findAll)
