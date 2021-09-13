@@ -46,7 +46,7 @@ export const deleteUser = (id) =>{
 
 export const updateUser = (id, name,email,role,password) =>{
     return api()
-    .patch("/admin/usuario/"+id, {name, email,role, password})
+    .patch("/usuario/"+id, {name, email,role, password})
     .then(res=>{
         return res.data || {}
     })

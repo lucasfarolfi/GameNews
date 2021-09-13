@@ -85,6 +85,15 @@ class News{
         }
     }
 
+    async getBySlug(slug){
+        try{
+            let news = await database.select().table("news").where({slug})
+            return news[0]
+        }catch(error){
+            console.log(error)
+        }
+    }
+
     async deleteById(id){
         try{
             await database.delete().table("news").where({id})

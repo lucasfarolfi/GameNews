@@ -5,7 +5,8 @@ const UserController = require('./controllers/UserController')
 
 //News
 Router.get("/noticias", NewsController.findAll)
-Router.get("/noticia/:id", NewsController.getById)
+Router.get("/admin/noticia/:id", NewsController.getById)
+Router.get("/noticia/:slug", NewsController.getBySlug)
 Router.post("/noticia", NewsController.create)
 Router.delete("/noticia/:id", NewsController.delete)
 Router.patch("/noticia/:id", NewsController.update)
@@ -23,7 +24,7 @@ Router.get("/usuario/:id", UserController.findUser)
 Router.post("/usuario", UserController.create)
 Router.delete("/usuario/:id", UserController.delete)
 Router.put("/usuario", UserController.updatePassword)
-Router.patch("/admin/usuario/:id", UserController.updateUser)
+Router.patch("/usuario/:id", UserController.updateUser)
 Router.post("/login", UserController.login)
 
 module.exports = Router

@@ -13,7 +13,18 @@ export const getNews = () =>{
 
 export const getNewsById = (id) =>{
     return api()
-    .get("/noticia/"+id)
+    .get("/admin/noticia/"+id)
+    .then(res=>{
+        return res.data || {}
+    })
+    .catch(error => {
+        throw error.response
+    })
+}
+
+export const getNewsBySlug = (slug) =>{
+    return api()
+    .get("/noticia/"+slug)
     .then(res=>{
         return res.data || {}
     })

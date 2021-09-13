@@ -21,6 +21,21 @@ class NewsController{
         res.status(200).json(news)
     }
     
+    async getBySlug(req, res){
+        let slug = req.params.slug
+        
+        if(slug == undefined || slug == ''){
+            return res.status(401).json({msg: "Dados inválidos."})
+        }
+
+        let newsExists = await News.getBySlug(slug)
+        if(newsExists == undefined){
+            return res.status(404).json({msg: "Notícia não encontrada."})
+        }
+
+        res.status(200).json(newsExists)
+    }
+
     async create(req, res){
         let {title, category, body} = req.body
 
