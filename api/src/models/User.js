@@ -71,7 +71,7 @@ class User{
 
     async findAll(){
         try{
-            return await database.select().table("user")
+            return await database.select().table("user").orderBy('id', 'desc')
         }catch(error){
             console.log(error)
         }

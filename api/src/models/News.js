@@ -32,7 +32,7 @@ class News{
     
     async findAll(){
         try{
-            let news = await database.select().table("news")
+            let news = await database.select().table("news").orderBy('id', 'desc')
             return news;
         }
         catch(error){

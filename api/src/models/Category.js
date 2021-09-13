@@ -4,7 +4,7 @@ const database = require("../database/config")
 class Category{
     async findAll(){
         try{
-            return await database.select().table("category")
+            return await database.select().table("category").orderBy('id', 'desc')
         }
         catch(error){
             console.log(error)
