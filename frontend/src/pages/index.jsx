@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react';
 import { getNews } from '../services/news';
 import { getDate } from '../utils/date';
+import NewsBox from '../components/newsBox';
+import Highlighted from '../components/highlightedNews/highlightedNews';
 
 export default function Home(){
 
@@ -25,32 +27,41 @@ export default function Home(){
     return(
         <>
             <Header/>
-            <Container>
-                <main>
-                    <div className={styles.carousel}></div>
+                <main className={styles.main}>
+                    <section className={styles.highlightsContainer}>
+                        <Container className={styles.container}>
+                            <h2>Em destaque</h2>
+                            <section className={styles.highlights}>
+                                
+                                {load && lastNews.map((nw, index)=>{
+                                    if(index >= 0 && index <= 3){
+                                        return(
+                                            <Highlighted {...nw}/>
+                                        )
+                                    }
+                                    else{
+                                    return;
+                                    }
+                                })}
+                            </section>
+                        </Container>
+                    </section>
+                    
 
-                    <section className={styles.lastNews}>
+                    <Container className={styles.container}><section className={styles.lastNews}>
                         <h2>Últimas notícias</h2>
 
                         <section className={styles.lastNewsContainer}>
                             {load && lastNews.map((nw, index)=>{
                                 return(
-                                    <Link href="/noticia/[slug]" as={`/noticia/${nw.slug}`}><div key={index} className={styles.newsBox}>
-                                        <div></div>
-                                        <section>
-                                        <div>{nw.title}</div>
-                                            <section className={styles.newsDetails}>
-                                                <div>Por {nw.author}, dia {getDate(nw.created_at)}</div>
-                                            </section>
-                                        </section>
-                                    </div></Link>
+                                    <NewsBox {...nw}/>
                                 )
                             })}
                         </section>
-                    </section>
+                    </section></Container>
                     
                 </main>
-            </Container>
+            
             <Footer/>
         </>
     )

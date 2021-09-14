@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState } from "react";
 import { getCategories,deleteCategory } from "../../../services/categories";
 import { getDate } from "../../../utils/date";
+import styles from '../../../styles/tables.module.scss'
 
 export default function Categorias(){
     const [loadTable, setLoadTable] = useState(false)
@@ -23,7 +24,7 @@ export default function Categorias(){
     return(
         <>
             <Header/>
-            <Container>
+            <Container className={styles.container}>
                 <main>
                     <h1>Categorias</h1>
 

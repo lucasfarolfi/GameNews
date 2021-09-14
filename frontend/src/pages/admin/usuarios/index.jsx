@@ -6,6 +6,7 @@ import Router from 'next/router';
 import { useEffect, useState } from "react";
 import {getUsers, deleteUser} from '../../../services/users'
 import { getDate } from "../../../utils/date";
+import styles from '../../../styles/tables.module.scss'
 
 export default function Usuarios(){
 
@@ -26,7 +27,7 @@ export default function Usuarios(){
     return(
         <>
             <Header/>
-            <Container>
+            <Container className={styles.container}>
                 <main>
                     <h1>Usuários</h1>
 

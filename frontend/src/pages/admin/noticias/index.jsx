@@ -6,6 +6,7 @@ import {useState} from 'react'
 import { deleteNews, getNews } from "../../../services/news";
 import {deleteCategory} from '../../../services/categories'
 import { getDate } from "../../../utils/date";
+import styles from '../../../styles/tables.module.scss'
 
 export default function Noticias(){
     const [loadTable, setLoadTable] = useState(false)
@@ -24,7 +25,7 @@ export default function Noticias(){
     return(
         <>
             <Header/>
-            <Container>
+            <Container className={styles.container}>
                 <main>
                     <h1>Notícias</h1>
 
