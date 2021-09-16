@@ -13,7 +13,7 @@ export const getNews = () =>{
 
 export const getNewsById = (id) =>{
     return api()
-    .get("/admin/noticia/"+id)
+    .get("/noticias/id/"+id)
     .then(res=>{
         return res.data || {}
     })
@@ -24,7 +24,7 @@ export const getNewsById = (id) =>{
 
 export const getNewsBySlug = (slug) =>{
     return api()
-    .get("/noticia/"+slug)
+    .get("/noticias/slug/"+slug)
     .then(res=>{
         return res.data || {}
     })
@@ -35,7 +35,7 @@ export const getNewsBySlug = (slug) =>{
 
 export const createNews = (title, category, body) =>{
     return api()
-    .post("/noticia", {title, category, body})
+    .post("/noticias", {title, category, body})
     .then(res=>{
         return res.data || {}
     })
@@ -46,7 +46,7 @@ export const createNews = (title, category, body) =>{
 
 export const updateNews = (id,title, category, body) =>{
     return api()
-    .patch("/noticia/"+id, {title, category, body})
+    .put("/noticias/"+id, {title, category, body})
     .then(res=>{
         return res.data || {}
     })
@@ -57,7 +57,7 @@ export const updateNews = (id,title, category, body) =>{
 
 export const deleteNews = (id) =>{
     return api()
-    .delete("/noticia/"+id)
+    .delete("/noticias/"+id)
     .then(res=>{
         return res.data || {}
     })

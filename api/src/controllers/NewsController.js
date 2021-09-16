@@ -1,96 +1,123 @@
 const News = require("../models/News")
+const newsConstants = require("../constants/newsConstants")
+const serverConstants = require("../constants/serverConstants")
+const verifyData = require("../utils/verifyData")
 
 class NewsController{
     async findAll(req, res){
-        let news = await News.findAll()
-        res.json(news)
+        try{
+            let news = await News.findAll()
+            res.json(news)
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
+        }
     }
     
-    async getById(req, res){
-        let id = req.params.id
+    async findById(req, res){
+        try{
+            let id = req.params.id
 
-        if(id == undefined || id == ''){
-            return res.status(401).json({msg: "Dados inválidos."})
+            if(!verifyData.id(id)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+            id = parseInt(id)
+
+            let news = await News.findById(id)
+            if(news == undefined){
+                return res.status(404).json({msg: newsConstants.notFound})
+            }
+
+            res.status(200).json(news)
+        }catch(e){
+             res.status(500).json({msg: serverConstants.internalError})
         }
-
-        let news = await News.getById(parseInt(id))
-        if(news == undefined){
-            return res.status(404).json({msg: "Notícia não encontrada"})
-        }
-
-        res.status(200).json(news)
     }
     
-    async getBySlug(req, res){
-        let slug = req.params.slug
+    async findBySlug(req, res){
+        try{
+            let slug = req.params.slug
         
-        if(slug == undefined || slug == ''){
-            return res.status(401).json({msg: "Dados inválidos."})
-        }
+            if(!verifyData.slug(slug)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
 
-        let newsExists = await News.getBySlug(slug)
-        if(newsExists == undefined){
-            return res.status(404).json({msg: "Notícia não encontrada."})
-        }
+            let newsExists = await News.findBySlug(slug)
+            if(newsExists == undefined){
+                return res.status(404).json({msg: newsConstants.notFound})
+            }
 
-        res.status(200).json(newsExists)
+            res.status(200).json(newsExists)
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
+        }
     }
 
     async create(req, res){
-        let {title, category, body} = req.body
+        try{
+            let {title, category, body} = req.body
 
-        if((title == undefined || title == '') ||
-        (category == undefined || category == '') || (body == undefined || body == '')){
-            return res.status(401).json({msg: "Dados inválidos."})
+            if(!verifyData.createNews(title, category, body)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+
+            let newsExists = await News.verifyTitle(title)
+            if(newsExists){
+                return res.status(406).json({msg: newsConstants.alreadyExists})
+            }
+
+            await News.create(title, category, body)
+            res.json({status: newsConstants.createdSuccess})
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
         }
-
-        let newsExists = await News.findByTitle(title)
-        if(newsExists){
-            return res.status(406).json({msg: "Esta notícia já existe."})
-        }
-
-        await News.create(title, category, body)
-        res.json({status: "Notícia criada com sucesso."})
     }
 
     async delete(req, res){
-        let id = req.params.id
+        try{
+            let id = req.params.id
 
-        if(id == undefined || id == ''){
-            return res.status(401).json({msg: "Dados inválidos."})
+            if(id == undefined || id == ''){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+
+            let newsExists = News.findById(parseInt(id))
+            if(!newsExists){
+                return res.status(404).json({msg: newsConstants.notFound})
+            }
+
+            await News.deleteById(parseInt(id))
+            res.status(200).json({status: newsConstants.deletedSuccess})
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
         }
-
-        let newsExists = News.findById(parseInt(id))
-        if(!newsExists){
-            return res.status(404).json({msg: "Notícia não encontrada."})
-        }
-
-        await News.deleteById(parseInt(id))
-        res.status(200).json({status: "Notícia deletada com sucesso."})
     }
 
     async update(req, res){
-        let id = req.params.id
-        let {title, category, body} = req.body
+        try{
+            let id = req.params.id
+            let {title, category, body} = req.body
 
-        if((id == undefined || id == '') || (title == undefined || title == '') ||
-        (category == undefined || category == '') || (body == undefined || body == '')){
-            return res.status(401).json({msg: "Dados inválidos."})
+            if(!verifyData.id(id) || !verifyData.createNews(title,category,body)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+            id = parseInt(id)
+
+            let newsExists = await News.verifyTitleById(id, title)
+            if(newsExists){
+                return res.status(406).json({msg: newsConstants.alreadyExists})
+            }
+
+            let verifyId = await News.findById(id)
+            console.log(verifyId)
+            if(!verifyId){
+                return res.status(404).json({msg: newsConstants.notFound})
+            }
+
+            await News.update(id, title, category, body)
+            res.json({status: newsConstants.updatedSuccess})
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
         }
-
-        let newsExists = await News.findTitleById(id, title)
-        if(newsExists){
-            return res.status(406).json({msg: "Esta notícia já existe."})
-        }
-
-        let verifyId = await News.findById(parseInt(id))
-        console.log(verifyId)
-        if(!verifyId){
-            return res.status(404).json({msg: "Notícia não encontrada."})
-        }
-
-        await News.update(parseInt(id), title, category, body)
-        res.json({status: "Notícia atualizada com sucesso."})
     }
 }
 

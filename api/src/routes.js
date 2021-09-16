@@ -5,26 +5,27 @@ const UserController = require('./controllers/UserController')
 
 //News
 Router.get("/noticias", NewsController.findAll)
-Router.get("/admin/noticia/:id", NewsController.getById)
-Router.get("/noticia/:slug", NewsController.getBySlug)
-Router.post("/noticia", NewsController.create)
-Router.delete("/noticia/:id", NewsController.delete)
-Router.patch("/noticia/:id", NewsController.update)
+Router.get("/noticias/id/:id", NewsController.findById)
+Router.get("/noticias/slug/:slug", NewsController.findBySlug)
+Router.post("/noticias", NewsController.create)
+Router.delete("/noticias/:id", NewsController.delete)
+Router.put("/noticias/:id", NewsController.update)
 
 //Category
 Router.get("/categorias", CategoryController.findAll)
-Router.post("/categoria", CategoryController.create)
-Router.get("/categoria/:id", CategoryController.findOne)
-Router.put("/categoria/:id", CategoryController.update)
-Router.delete("/categoria/:id", CategoryController.delete)
+Router.post("/categorias", CategoryController.create)
+Router.get("/categorias/id/:id", CategoryController.findById)
+Router.get("/categorias/slug/:slug", CategoryController.findBySlug)
+Router.put("/categorias/:id", CategoryController.update)
+Router.delete("/categorias/:id", CategoryController.delete)
 
 //User
 Router.get("/usuarios", UserController.findAll)
-Router.get("/usuario/:id", UserController.findUser)
-Router.post("/usuario", UserController.create)
-Router.delete("/usuario/:id", UserController.delete)
-Router.put("/usuario", UserController.updatePassword)
-Router.patch("/usuario/:id", UserController.updateUser)
+Router.get("/usuarios/:id", UserController.findUser)
+Router.post("/usuarios", UserController.create)
+Router.delete("/usuarios/:id", UserController.delete)
+Router.patch("/usuarios", UserController.updatePassword)
+Router.put("/usuarios/:id", UserController.updateUser)
 Router.post("/login", UserController.login)
 
 module.exports = Router

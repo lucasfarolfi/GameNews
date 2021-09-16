@@ -3,6 +3,49 @@ const Slugify = require("slugify")
 const bcrypt = require("bcrypt")
 
 class User{
+    async findAll(){
+        try{
+            return await database.select().table("user").orderBy('id', 'desc')
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+    async findOne(id){
+        try{
+            let user = await database.select().table("user").where({id})
+            return user[0]
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+    async verifyEmail(email){
+        try{
+            let findEmail = await database.select().table("user").where({email})
+
+            if(findEmail.length > 0) return true
+            else return false
+        }
+        catch(error){
+            console.log(error)
+            return false
+        }
+    }
+
+    async verifyId(id){
+        try{
+            let findUser = await database.select().table("user").where({id})
+
+            if(findUser.length > 0) return true
+            else return false
+        }
+        catch(error){
+            console.log(error)
+            return false
+        }
+    }
+
     async create(name,email,password){
         let slug = Slugify(name).toLowerCase()
         let hash_password = await bcrypt.hash(password, 10)
@@ -69,58 +112,8 @@ class User{
         }
     }
 
-    async findAll(){
-        try{
-            return await database.select().table("user").orderBy('id', 'desc')
-        }catch(error){
-            console.log(error)
-        }
-    }
-
-    async findOne(id){
-        try{
-            return await database.select().table("user").where({id})
-        }catch(error){
-            console.log(error)
-        }
-    }
-
-    async findByEmail(email){
-        try{
-            let findEmail = await database.select().table("user").where({email})
-
-            if(findEmail.length > 0) return true
-            else return false
-        }
-        catch(error){
-            console.log(error)
-            return false
-        }
-    }
-
-    async findById(id){
-        try{
-            let findUser = await database.select().table("user").where({id})
-
-            if(findUser.length > 0) return true
-            else return false
-        }
-        catch(error){
-            console.log(error)
-            return false
-        }
-    }
-
-    async getByEmail(email){
-        try{
-            return await database.select().table("user").where({email})
-        }catch(error){
-            console.log(error)
-        }
-    }
-
     async validateUser(email, password){
-        let user = await this.getByEmail(email)
+        let user = await database.select().table("user").where({email})
         user = user[0]
 
         try{

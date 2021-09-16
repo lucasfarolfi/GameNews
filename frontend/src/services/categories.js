@@ -13,7 +13,7 @@ export const getCategories = ()=>{
 
 export const getCategoryById = (id)=>{
     return api()
-    .get("/categoria/"+id)
+    .get("/categorias/id/"+id)
     .then(res=>{
         return res.data || {}
     })
@@ -24,7 +24,7 @@ export const getCategoryById = (id)=>{
 
 export const createCategory = (name)=>{
     return api()
-    .post("/categoria/", {name})
+    .post("/categorias", {name})
     .then(res=>{
         return res.data || {}
     })
@@ -35,7 +35,7 @@ export const createCategory = (name)=>{
 
 export const updateCategory = (id,name)=>{
     return api()
-    .put("/categoria/"+id, {name})
+    .put("/categorias/"+id, {name})
     .then(res=>{
         return res.data || {}
     })
@@ -46,7 +46,7 @@ export const updateCategory = (id,name)=>{
 
 export const deleteCategory = (id)=>{
     return api()
-    .delete("/categoria/"+id)
+    .delete("/categorias/"+id)
     .then(res=>{
         return res.data || {}
     })

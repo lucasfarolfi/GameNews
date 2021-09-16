@@ -11,6 +11,47 @@ class Category{
         }
     }
 
+    async findById(id){
+        try{
+            let category = await database.select().table("category").where({id})
+            return category[0]
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+    async findBySlug(slug){
+        try{
+            let category = await database.select().table("category").where({slug})
+            return category[0]
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+    async verifySlug(name){
+        let slug = slugify(name).toLowerCase()
+        try{
+            let findCategory = await database.select().table("category").where({slug})
+            if(findCategory.length > 0) return true
+            else return false
+        }catch(error){
+            console.log(error)
+            return false
+        }
+    }
+
+    async verifyId(id){
+        try{
+            let findCategory = await database.select().table("category").where({id})
+            if(findCategory.length > 0) return true
+            else return false
+        }catch(error){
+            console.log(error)
+            return false
+        }
+    }
+
     async create(name){
         let slug = slugify(name).toLowerCase()
         try{
@@ -39,55 +80,5 @@ class Category{
         }
     }
 
-    async findByName(name){
-        try{
-            let findCategory = await database.select().table("category").where({name})
-            if(findCategory.length > 0) return true
-            else return false
-        }catch(error){
-            console.log(error)
-            return false
-        }
-    }
-
-    async findBySlug(name){
-        let slug = slugify(name).toLowerCase()
-        try{
-            let findCategory = await database.select().table("category").where({slug})
-            if(findCategory.length > 0) return true
-            else return false
-        }catch(error){
-            console.log(error)
-            return false
-        }
-    }
-
-    async findById(id){
-        try{
-            let findCategory = await database.select().table("category").where({id})
-            if(findCategory.length > 0) return true
-            else return false
-        }catch(error){
-            console.log(error)
-            return false
-        }
-    }
-
-    async getBySlug(slug){
-        try{
-            return await database.select().table("category").where({slug})[0]
-        }catch(error){
-            console.log(error)
-        }
-    }
-
-    async getById(id){
-        try{
-            let category = await database.select().table("category").where({id})
-            return category[0]
-        }catch(error){
-            console.log(error)
-        }
-    }
 }
 module.exports = new Category()

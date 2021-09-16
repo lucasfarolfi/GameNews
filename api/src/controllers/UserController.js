@@ -1,124 +1,157 @@
 const User = require("../models/User")
+const userConstants = require("../constants/userConstants")
+const serverConstants = require("../constants/serverConstants")
+const verifyData = require("../utils/verifyData")
 
 class UserController{
     async findAll(req, res){
-        let users = await User.findAll()
-        res.status(200).json(users)
+        try{
+            let users = await User.findAll()
+            res.status(200).json(users)
+        }catch(e){
+            console.log(e)
+            res.status(500).json({msg: serverConstants.internalError})
+        }
     }
 
     async findUser(req, res){
-        let {id} = req.params
+        try{
+            let {id} = req.params
+            
+            if(!verifyData.id(id)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+            id = parseInt(id)
 
-        if(id == undefined || id == '' || id == isNaN(id)){
-            return res.status(401).json({msg: "Dados inválidos"})
+            let user = await User.findOne(id)
+            if(user == undefined){
+                return res.status(404).json({msg: userConstants.userNotFound})
+            }
+
+            res.status(200).json(user)
+        }catch(e){
+            console.log(e)
+            res.status(500).json({msg: serverConstants.internalError})
         }
-
-        let userExists = await User.findById(parseInt(id))
-        if(!userExists){
-            return res.status(404).json({msg: "Usuário não encontrado."})
-        }
-
-        let user = await User.findOne(parseInt(id))
-        res.status(200).json(user[0])
     }
 
     async create(req, res){
-        let {name, email,password} = req.body
+        try{
+            let {name, email,password} = req.body
 
-        //Null input values
-        if((name == undefined || name == '') || (email == undefined || email == '') || (password == undefined || password == '')){
-            return res.status(400).json({msg: "Dados inválidos."})
-        }
-        //Small password
-        if(password.length < 8){
-            return res.status(400).json({msg: "A senha deve ter no mínimo 8 caracteres."})
-        }
+            //Null input values
+            if(!verifyData.createUser(name,email,password)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+            //Small password
+            if(!verifyData.minPassword(password)){
+                return res.status(400).json({msg: userConstants.userSmallPassword})
+            }
 
-        //Email almost exists
-        let findEmail = await User.findByEmail(email)
-        if(findEmail){
-            return res.status(406).json({msg: "E-mail já cadastrado."})
-        }
+            //Email almost exists
+            let findEmail = await User.verifyEmail(email)
+            if(findEmail){
+                return res.status(406).json({msg: userConstants.userEmailExists})
+            }
 
-        await User.create(name,email,password)
-        res.status(200).json({status:"Usuário criado com sucesso"})
+            await User.create(name,email,password)
+            res.status(200).json({status: userConstants.userCreateSuccess})
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
+        }
     }
 
     async updateUser(req, res){
-        let id = req.params.id
-        let {name, email, password, role} = req.body
-        console.log(password)
+        try{
+            let id = req.params.id
+            let {name, email, password, role} = req.body
 
-        if((name == undefined || name == '') || (email == undefined || email == '')
-        || (role == undefined || role == '')){
-            return res.status(401).json({msg: "Dados inválidos."})
+            if(!verifyData.updateUser(name,email,role) || !verifyData.id(id)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+
+            id = parseInt(id)
+            let userExists = await User.verifyId(id)
+            if(!userExists){
+                return res.status(404).json({msg: userConstants.userNotFound})
+            }
+
+            await User.update(id, name, email, password, role)
+            res.status(200).json({status: userConstants.userUpdateSuccess})
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
         }
-
-        let userExists = await User.findById(parseInt(id))
-        if(!userExists){
-            return res.status(404).json({msg: "Usuário não encontrado."})
-        }
-
-        await User.update(parseInt(id), name, email, password, role)
-        res.status(200).json({status: "Usuário atualizado com sucesso."})
     }
 
     async updatePassword(req, res){
-        let {email, password} = req.body
+        try{
+            let {email, password} = req.body
 
-        if((email == undefined || email == '') || (password == undefined || password == '')){
-            return res.status(401).json({msg: "Dados inválidos."})
+            if(!verifyData.email_Pass(email,password)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+
+            if(!verifyData.minPassword(password)){
+                return res.status(401).json({msg: userConstants.userSmallPassword})
+            }
+
+            let userExists = await User.verifyEmail(email)
+            if(!userExists){
+                return res.status(404).json({msg: userConstants.userIncorrect})
+            }
+
+            await User.updatePassword(email,password)
+            res.status(200).json({status: userConstants.passwordUpdateSuccess})
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
         }
-
-        if(password.length < 8){
-            return res.status(401).json({msg: "A senha deve ter no mínimo 8 caracteres."})
-        }
-
-        let userExists = await User.findByEmail(email)
-        if(!userExists){
-            return res.status(404).json({msg: "Usuário incorreto ou não existe."})
-        }
-
-        await User.updatePassword(email,password)
-        res.status(200).json({status: "Senha atualizada com sucesso."})
     }
 
     async delete(req, res){
-        let {id} = req.params
+        try{
+            let {id} = req.params
 
-        console.log(id)
+            if(!verifyData.id(id)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+            id = parseInt(id)
 
-        if(id == undefined || id == ''){
-            return res.status(401).json({msg: "Dados inválidos."})
+            let idExists = await User.verifyId(id)
+            if(!idExists){
+                return res.status(404).json({msg: userConstants.userIncorrect})
+            }
+
+            await User.delete(id)
+            res.status(200).json({status: userConstants.userDeleteSuccess})
+        }catch(e){
+              res.status(500).json({msg: serverConstants.internalError})
         }
-
-        let idExists = await User.findById(id)
-        if(!idExists){
-            return res.status(404).json({msg: "Usuário não encontrado."})
-        }
-
-        await User.delete(parseInt(id))
-        res.status(200).json({status: "Usuário deletado com sucesso."})
     }
     
     async login(req, res){
-        let {email, password} = req.body
+        try{
+            let {email, password} = req.body
 
-        if((email == undefined || email == '') || (password == undefined || password == '')){
-            return res.status(401).json({msg: "Dados inválidos."})
-        }
+            if(!verifyData.email_Pass(email,password)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
 
-        let findEmail = await User.findByEmail(email)
-        if(!findEmail){
-            return res.status(404).json({msg: "Usuário incorreto ou não existe."})
+            let findEmail = await User.verifyEmail(email)
+            if(!findEmail){
+                return res.status(404).json({msg: userConstants.userIncorrect})
+            }
+            console.log("aqui")
+            let user = await User.validateUser(email, password)
+            
+            if(user == undefined){
+                return res.status(406).json({msg: userConstants.userIncorrectPassword})
+            }
+            
+            res.status(200).json(user)
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
         }
-
-        let user = await User.validateUser(email, password)
-        if(user == undefined){
-            return res.status(406).json({msg: "Senha incorreta."})
-        }
-        
-        res.status(200).json({user: user})
     }
 }
+
 module.exports = new UserController()

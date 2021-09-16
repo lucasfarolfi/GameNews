@@ -13,7 +13,7 @@ export const getUsers = () =>{
 
 export const getUserById = (id) =>{
     return api()
-    .get("/usuario/"+id)
+    .get("/usuarios/"+id)
     .then(res=>{
         return res.data || {}
     })
@@ -24,7 +24,7 @@ export const getUserById = (id) =>{
 
 export const registerUser = (name,email,password) =>{
     return api()
-    .post("/usuario", {name, email, password})
+    .post("/usuarios", {name, email, password})
     .then(res=>{
         return res.data || {}
     })
@@ -35,7 +35,7 @@ export const registerUser = (name,email,password) =>{
 
 export const deleteUser = (id) =>{
     return api()
-    .delete("/usuario/"+id)
+    .delete("/usuarios/"+id)
     .then(res=>{
         return res.data || {}
     })
@@ -46,7 +46,7 @@ export const deleteUser = (id) =>{
 
 export const updateUser = (id, name,email,role,password) =>{
     return api()
-    .patch("/usuario/"+id, {name, email,role, password})
+    .put("/usuarios/"+id, {name, email,role, password})
     .then(res=>{
         return res.data || {}
     })
