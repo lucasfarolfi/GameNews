@@ -54,9 +54,9 @@ class NewsController{
 
     async create(req, res){
         try{
-            let {title, category, body} = req.body
+            let {title, category_id, body} = req.body
 
-            if(!verifyData.createNews(title, category, body)){
+            if(!verifyData.createNews(title, category_id, body)){
                 return res.status(400).json({msg: serverConstants.invalidData})
             }
 
@@ -65,7 +65,7 @@ class NewsController{
                 return res.status(406).json({msg: newsConstants.alreadyExists})
             }
 
-            await News.create(title, category, body)
+            await News.create(title, category_id, body)
             res.json({status: newsConstants.createdSuccess})
         }catch(e){
             res.status(500).json({msg: serverConstants.internalError})
@@ -95,9 +95,9 @@ class NewsController{
     async update(req, res){
         try{
             let id = req.params.id
-            let {title, category, body} = req.body
+            let {title, category_id, body} = req.body
 
-            if(!verifyData.id(id) || !verifyData.createNews(title,category,body)){
+            if(!verifyData.id(id) || !verifyData.createNews(title,category_id,body)){
                 return res.status(400).json({msg: serverConstants.invalidData})
             }
             id = parseInt(id)
@@ -113,7 +113,7 @@ class NewsController{
                 return res.status(404).json({msg: newsConstants.notFound})
             }
 
-            await News.update(id, title, category, body)
+            await News.update(id, title, category_id, body)
             res.json({status: newsConstants.updatedSuccess})
         }catch(e){
             res.status(500).json({msg: serverConstants.internalError})

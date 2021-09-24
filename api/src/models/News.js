@@ -65,29 +65,29 @@ class News{
         }
     }
 
-    async create(title, category, body){
+    async create(title, category_id, body){
         let slug = Slugify(title).toLowerCase()
 
         try{
             await database.insert(
                 {title, 
                 slug, 
-                author: "Lucas", 
-                category, 
-                body, 
-                created_at: new Date()})
-                .table("news")
+                user_id: 1, 
+                category_id: parseInt(category_id), 
+                body
+            })
+            .table("news")
 
         }catch(error){
             console.log(error)
         }
     }
 
-    async update(id, title, category, body){
+    async update(id, title, category_id, body){
         let slug = Slugify(title).toLowerCase()
 
         try{
-            await database.update({title, slug, category, body, updated_at: new Date()}).table("news").where({id})
+            await database.update({title, slug, category_id, body, updated_at: new Date()}).table("news").where({id})
         }catch(error){
             console.log(error)
         }

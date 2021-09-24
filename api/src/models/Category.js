@@ -55,7 +55,7 @@ class Category{
     async create(name){
         let slug = slugify(name).toLowerCase()
         try{
-            return await database.insert({name, slug, created_at: new Date(), author:"Lucas"}).table("category")
+            return await database.insert({name, slug, user_id: 1}).table("category")
         }
         catch(error){
             console.log(error)
@@ -65,7 +65,7 @@ class Category{
     async update(id, name){
         let slug = slugify(name).toLowerCase()
         try{
-            return await database.update({name, slug, updated_at: new Date(), author:"Lucas"}).table("category").where({id})
+            return await database.update({name, slug}).table("category").where({id})
         }
         catch(error){
             console.log(error)

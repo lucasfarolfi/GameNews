@@ -140,7 +140,7 @@ class UserController{
             if(!findEmail){
                 return res.status(404).json({msg: userConstants.userIncorrect})
             }
-            console.log("aqui")
+            
             let user = await User.validateUser(email, password)
             
             if(user == undefined){

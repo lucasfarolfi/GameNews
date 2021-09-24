@@ -51,7 +51,7 @@ class User{
         let hash_password = await bcrypt.hash(password, 10)
         try{
             return await database.insert({
-                name, slug, email, password: hash_password, created_at: new Date(), role:0
+                name, slug, email, password: hash_password, role:0
             }).table("user")
         }
         catch(error){
