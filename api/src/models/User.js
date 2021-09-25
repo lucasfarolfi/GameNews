@@ -5,7 +5,8 @@ const bcrypt = require("bcrypt")
 class User{
     async findAll(){
         try{
-            return await database.select().table("user").orderBy('id', 'desc')
+            return await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
+            .table("user").orderBy('id', 'desc')
         }catch(error){
             console.log(error)
         }
@@ -13,7 +14,8 @@ class User{
 
     async findOne(id){
         try{
-            let user = await database.select().table("user").where({id})
+            let user = await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
+            .table("user").where({id})
             return user[0]
         }catch(error){
             console.log(error)

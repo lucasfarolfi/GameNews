@@ -50,8 +50,8 @@ export default function Noticias(){
                                     <td scope="col">{news.id}</td>
                                     <td scope="col">{news.title}</td>
                                     <td scope="col">{news.slug}</td>
-                                    <td scope="col">{news.category}</td>
-                                    <td scope="col">{news.author}</td>
+                                    <td scope="col">{news.category_name}</td>
+                                    <td scope="col">{news.user_name}</td>
                                     <td scope="col">{getDate(news.created_at)}</td>
                                     <td scope="col"><Link href="/admin/noticia/editar/[id]" as={`/admin/noticia/editar/${news.id}`}><Button className="m-1" variant="warning">Editar</Button></Link>
                                     <Button 

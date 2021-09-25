@@ -36,7 +36,7 @@ export default function Categorias(){
                                 <th scope="col">Id</th>
                                 <th scope="col">Nome</th>
                                 <th scope="col">Slug</th>
-                                <th scope="col">Autor</th>
+                                <th scope="col">Autor(a)</th>
                                 <th scope="col">Criação</th>
                                 <th scope="col">Ações</th>
                             </tr>
@@ -48,7 +48,7 @@ export default function Categorias(){
                                     <td scope="col">{category.id}</td>
                                     <td scope="col">{category.name}</td>
                                     <td scope="col">{category.slug}</td>
-                                    <td scope="col">{category.author}</td>
+                                    <td scope="col">{category.user_name}</td>
                                     <td scope="col">{getDate(category.created_at)}</td>
                                     <td scope="col"><Link href="/admin/categoria/editar/[id]" as={`/admin/categoria/editar/${category.id}`}><Button className="m-1" variant="warning">Editar</Button></Link>
                                     <Button 

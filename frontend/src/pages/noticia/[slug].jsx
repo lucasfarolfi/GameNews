@@ -38,7 +38,7 @@ export default function Home({params}){
                     <section className={styles.newsContainer}>
                         <section className={styles.newsHeader}>
                             <h1>{news.title}</h1>
-                            <small>Por {"news.author"}, dia {getDate(news.created_at)} - {"news.category"}</small>
+                            <small>Por {news.user_name}, dia {getDate(news.created_at)} - {news.category_name}</small>
                         </section>
                         <article className={styles.newsBody}>{news.body}</article>
                     </section>

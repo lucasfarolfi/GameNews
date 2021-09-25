@@ -4,7 +4,9 @@ const database = require("../database/config")
 class Category{
     async findAll(){
         try{
-            return await database.select().table("category").orderBy('id', 'desc')
+            return await database.select(['category.*', 'user.name as user_name'])
+            .table("category").orderBy('id', 'desc')
+            .join('user', 'category.user_id', 'user.id')
         }
         catch(error){
             console.log(error)
@@ -13,19 +15,25 @@ class Category{
 
     async findById(id){
         try{
-            let category = await database.select().table("category").where({id})
+            let category = await database.select(['category.*', 'user.name as user_name'])
+            .from("category").where('category.id', id)
+            .join('user', 'category.user_id', 'user.id')
             return category[0]
         }catch(error){
             console.log(error)
+            return undefined
         }
     }
 
     async findBySlug(slug){
         try{
-            let category = await database.select().table("category").where({slug})
+            let category = await database.select(['category.*', 'user.name as user_name'])
+            .from("category").where('category.slug', slug)
+            .join('user', 'category.user_id', 'user.id')
             return category[0]
         }catch(error){
             console.log(error)
+            return undefined
         }
     }
 

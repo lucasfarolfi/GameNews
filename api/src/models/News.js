@@ -4,7 +4,10 @@ const database = require('../database/config')
 class News{
     async findAll(){
         try{
-            let news = await database.select().table("news").orderBy('id', 'desc')
+            let news = await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
+            .from("news").orderBy('id', 'desc')
+            .join('user', 'news.user_id', 'user.id')
+            .join('category', 'news.category_id', 'category.id')
             return news;
         }
         catch(error){
@@ -14,19 +17,27 @@ class News{
     
     async findById(id){
         try{
-            let news = await database.select().table("news").where({id})
+            let news = await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
+            .from("news").where('news.id', id)
+            .join("user", "news.user_id", "user.id")
+            .join("category", "news.category_id", "category.id")
             return news[0]
         }catch(error){
             console.log(error)
+            return undefined
         }
     }
 
     async findBySlug(slug){
         try{
-            let news = await database.select().table("news").where({slug})
+            let news = await await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
+            .from("news").where('news.slug', slug)
+            .join("user", "news.user_id", "user.id")
+            .join("category", "news.category_id", "category.id")
             return news[0]
         }catch(error){
             console.log(error)
+            return undefined
         }
     }
 

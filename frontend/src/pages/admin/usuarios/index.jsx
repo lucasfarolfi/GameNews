@@ -38,7 +38,6 @@ export default function Usuarios(){
                             <tr>
                                 <th scope="col">Id</th>
                                 <th scope="col">Nome</th>
-                                <th scope="col">Slug</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Cargo</th>
                                 <th scope="col">Criação</th>
@@ -51,7 +50,6 @@ export default function Usuarios(){
                                     <tr key={user.id}>
                                     <td scope="col">{user.id}</td>
                                     <td scope="col">{user.name}</td>
-                                    <td scope="col">{user.slug}</td>
                                     <td scope="col">{user.email}</td>
                                     <td scope="col">{user.role}</td>
                                     <td scope="col">{getDate(user.created_at)}</td>
