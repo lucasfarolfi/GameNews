@@ -1,6 +1,7 @@
 const database = require("../database/config")
 const Slugify = require("slugify")
 const bcrypt = require("bcrypt")
+const salt =  parseInt(process.env.HASH_SALT)
 
 class User{
     async findAll(){
@@ -50,7 +51,7 @@ class User{
 
     async create(name,email,password){
         let slug = Slugify(name).toLowerCase()
-        let hash_password = await bcrypt.hash(password, 10)
+        let hash_password = await bcrypt.hash(password, salt)
         try{
             return await database.insert({
                 name, slug, email, password: hash_password, role:0
@@ -87,7 +88,7 @@ class User{
             }
         }
         else{
-            let hash = await bcrypt.hash(password, 10)
+            let hash = await bcrypt.hash(password, salt)
 
             try{
                 await database.where({id}).update({
@@ -106,7 +107,7 @@ class User{
     }
 
     async updatePassword(email,password){
-        let newPassword = await bcrypt.hash(password, 10)
+        let newPassword = await bcrypt.hash(password, salt)
         try{
             await database.where({email}).table("user").update({password: newPassword,updated_at: new Date()})
         }catch(error){
