@@ -2,6 +2,7 @@ const Router = require('express').Router()
 const NewsController = require('./controllers/NewsController')
 const CategoryController = require('./controllers/CategoryController')
 const UserController = require('./controllers/UserController')
+const AdminAuth = require("./middleware/AdminAuth")
 
 //News
 Router.get("/noticias", NewsController.findAll)
@@ -20,11 +21,11 @@ Router.put("/categorias/:id", CategoryController.update)
 Router.delete("/categorias/:id", CategoryController.delete)
 
 //User
-Router.get("/usuarios", UserController.findAll)
-Router.get("/usuarios/:id", UserController.findUser)
+Router.get("/usuarios", AdminAuth, UserController.findAll)
+Router.get("/usuarios/:id", AdminAuth, UserController.findUser)
 Router.post("/usuarios", UserController.create)
-Router.delete("/usuarios/:id", UserController.delete)
-Router.patch("/usuarios", UserController.updatePassword)
+Router.delete("/usuarios/:id", AdminAuth, UserController.delete)
+Router.patch("/usuarios", AdminAuth, UserController.updatePassword)
 Router.put("/usuarios/:id", UserController.updateUser)
 Router.post("/login", UserController.login)
 

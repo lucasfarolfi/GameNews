@@ -2,6 +2,8 @@ const User = require("../models/User")
 const userConstants = require("../constants/userConstants")
 const serverConstants = require("../constants/serverConstants")
 const verifyData = require("../utils/verifyData")
+const secret = require("../utils/JWTSecret")
+const jwt = require("jsonwebtoken")
 
 class UserController{
     async findAll(req, res){
@@ -147,7 +149,8 @@ class UserController{
                 return res.status(406).json({msg: userConstants.userIncorrectPassword})
             }
             
-            res.status(200).json(user)
+            let token = jwt.sign({id: user.id, name: user.name, email: user.email, role: user.role}, secret)
+            res.status(200).json({token: token})
         }catch(e){
             res.status(500).json({msg: serverConstants.internalError})
         }
