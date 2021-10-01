@@ -22,11 +22,11 @@ Router.delete("/categorias/:id", CategoryController.delete)
 
 //User
 Router.get("/usuarios", AdminAuth, UserController.findAll)
-Router.get("/usuarios/:id", AdminAuth, UserController.findUser)
+Router.get("/usuarios/:id", AdminAuth, UserController.findOne)
 Router.post("/usuarios", UserController.create)
 Router.delete("/usuarios/:id", AdminAuth, UserController.delete)
 Router.patch("/usuarios", AdminAuth, UserController.updatePassword)
 Router.put("/usuarios/:id", UserController.updateUser)
-Router.post("/login", UserController.login)
+Router.post("/usuarios/login", UserController.login)
 
 module.exports = Router

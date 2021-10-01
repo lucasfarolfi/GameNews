@@ -46,6 +46,7 @@ module.exports = {
     },
 
     updateUser(name,email,role){
+        console.log("Chegou aqui")
         if((name == undefined || name == '') || 
         (email == undefined || email == '') || 
         (role == undefined || role == '')){

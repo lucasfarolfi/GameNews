@@ -8,5 +8,6 @@ module.exports = {
     userIncorrect: "Usuário incorreto ou não existe.",
     passwordUpdateSuccess: "Senha atualizada com sucesso.",
     userDeleteSuccess: "Usuário foi deletado com sucesso.",
-    userIncorrectPassword: "Senha incorreta."
+    userIncorrectPassword: "Senha incorreta.",
+    usersNotFound: "Não há nenhum usuário registrado!"
 }
