@@ -4,4 +4,5 @@ module.exports = {
     notFound: "Categoria não encontrada ou não existe.",
     updatedSuccess: "Categoria editada com sucesso.",
     deletedSuccess: "Categoria deletada com sucesso.",
+    categoriesNotRegistered: "Não há nenhuma categoria registrada!"
 }

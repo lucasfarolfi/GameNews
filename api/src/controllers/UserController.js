@@ -39,7 +39,7 @@ class UserController{
         let query = await User.updatePassword(email,password)
         return res.status(query.code).json({msg: query.msg})
     }
-
+    
     async delete(req, res){
         let {id} = req.params
 
@@ -56,7 +56,25 @@ class UserController{
         }
         return res.status(query.code).json({token: query.token})
     }
+/*
+    async findAllCategories(req, res){
+        let {userId} = req.params
+        let query = await User.findAllCategories(userId)
+        if(query.msg) return res.status(query.code).json({msg: query.msg})
+            
+        return res.status(query.code).json({categories: query.categories})
+    }
  
+    async findOne(req, res){
+        let {userId, categoryId} = req.params
+
+        let query = await User.findOne(id)
+        if(!query.status){
+            return res.status(query.code).json({msg: query.msg})
+        }
+        return res.status(query.code).json({user: query.user})
+    }*/
+
 }
 
 module.exports = new UserController()

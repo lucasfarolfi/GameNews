@@ -77,8 +77,8 @@ class User{
             let findUser = await database.select().table("user").where({id: user_id})
             if(findUser.length === 0) return{status: false,code: 404, msg: userConstants.userNotFound}
 
-            let findEmail = await database.select().table("user").where({email})
-            if(findEmail[0] && findUser[0].email !== findEmail[0].email) return{status: false,code: 406, msg: userConstants.userEmailExists}
+            let findEmail = await database.select().table("user").whereNot({id}).andWhere({email})
+            if(findEmail.length > 0) return{status: false,code: 406, msg: userConstants.userEmailExists}
             
             if(password == undefined || password == ''){
                 await database.where({id: user_id}).update({
