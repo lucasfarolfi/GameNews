@@ -1,4 +1,4 @@
-const Category = require("../models/Category")
+const Category = require("../services/Category")
 const categoryConstants = require("../constants/categoryConstants")
 const serverConstants = require("../constants/serverConstants")
 const verifyData = require("../utils/verifyData")

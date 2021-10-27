@@ -60,7 +60,7 @@ export default function Cadastro(){
                         {errors.password?.message ? <Form.Text className="text-danger">{errors.password?.message}</Form.Text> : null}
                         
                         <Form.Group className="mt-3" controlId="formBasicConfirm">
-                            <Form.Label>Senha</Form.Label>
+                            <Form.Label>Confirmar Senha</Form.Label>
                             <Form.Control type="password" placeholder="Confirme a senha" {...register("confirm")}  />
                         </Form.Group>
                         {errors.confirm?.message ? <Form.Text className="text-danger">{errors.confirm?.message}</Form.Text> : null}

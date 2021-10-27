@@ -1,4 +1,4 @@
-const User = require("../models/User")
+const User = require("../services/User")
 
 class UserController{
     async findAll(req, res){

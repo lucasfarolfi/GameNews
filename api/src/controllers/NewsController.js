@@ -1,4 +1,4 @@
-const News = require("../models/News")
+const News = require("../services/News")
 const newsConstants = require("../constants/newsConstants")
 const serverConstants = require("../constants/serverConstants")
 const verifyData = require("../utils/verifyData")
