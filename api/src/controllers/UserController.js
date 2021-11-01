@@ -37,24 +37,20 @@ class UserController{
         let service = await User.validateUser(email, password)
         return res.status(service.code).json(service.response)
     }
-/*
-    async findAllCategories(req, res){
-        let {userId} = req.params
-        let query = await User.findAllCategories(userId)
-        if(query.msg) return res.status(query.code).json({msg: query.msg})
-            
-        return res.status(query.code).json({categories: query.categories})
+
+    async findUserCategories(req, res){
+        let {id} = req.params
+        let user_auth = verifyUserAuth(req.headers.authorization)
+        let service = await User.findCategories(id, user_auth.id, user_auth.role) 
+        return res.status(service.code).json(service.response)
     }
  
-    async findOne(req, res){
-        let {userId, categoryId} = req.params
-
-        let query = await User.findOne(id)
-        if(!query.status){
-            return res.status(query.code).json({msg: query.msg})
-        }
-        return res.status(query.code).json({user: query.user})
-    }*/
+    async findUserNews(req, res){
+        let {id} = req.params
+        let user_auth = verifyUserAuth(req.headers.authorization)
+        let service = await User.findNews(id, user_auth.id, user_auth.role)
+        return res.status(service.code).json(service.response)
+    }
 
 }
 

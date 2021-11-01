@@ -18,12 +18,14 @@ Router.get("/categorias", CategoryController.findAll)
 Router.get("/categorias/id/:id", CategoryController.findById)
 Router.get("/categorias/slug/:slug", CategoryController.findBySlug)
 Router.post("/categorias", AuthorAuth, CategoryController.create)
-Router.put("/categorias/:id", AdminAuth, CategoryController.update)
-Router.delete("/categorias/:id", AdminAuth,CategoryController.delete)
+Router.put("/categorias/:id", AuthorAuth, CategoryController.update)//To fix
+Router.delete("/categorias/:id", AuthorAuth,CategoryController.delete)//To fix
 
 //User
 Router.get("/usuarios", AdminAuth, UserController.findAll)
 Router.get("/usuarios/:id", AdminAuth, UserController.findOne)
+Router.get("/usuarios/:id/categorias", AuthorAuth, UserController.findUserCategories) 
+Router.get("/usuarios/:id/noticias", AuthorAuth, UserController.findUserNews) 
 Router.post("/usuarios", AdminAuth, UserController.create)
 Router.post("/usuarios/login", UserController.login)
 Router.put("/usuarios/:id", AdminAuth,UserController.updateUser)

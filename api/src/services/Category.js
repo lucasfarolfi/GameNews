@@ -6,6 +6,8 @@ const verifyData = require("../utils/verifyData")
 const userConstants = require("../constants/userConstants")
 
 class Category{
+
+    // Get all categories
     async findAll(){
         try{
             let categories = await database.select(['category.*', 'user.name as user_name'])
@@ -25,6 +27,7 @@ class Category{
         }
     }
 
+    // Get one category by id
     async findById(categoryId){
         try{
             let category = await database.select(['category.*', 'user.name as user_name'])
@@ -50,6 +53,7 @@ class Category{
         }
     }
 
+    // Get one category by slug
     async findBySlug(slug){
         try{
             let category = await database.select(['category.*', 'user.name as user_name'])
@@ -75,6 +79,7 @@ class Category{
         }
     }
 
+    // Create a category
     async create(name, userId){
         if(!verifyData.name(name) || !verifyData.id(userId)){
             return{ 
@@ -121,6 +126,7 @@ class Category{
         }
     }
 
+    // Update a category
     async update(id, name){
         if(!verifyData.name(name) || !verifyData.id(id)){
             return{ 
@@ -166,6 +172,7 @@ class Category{
         }
     }
 
+    // Delete a category
     async delete(id){
         if(!verifyData.id(id)){
             return{ 

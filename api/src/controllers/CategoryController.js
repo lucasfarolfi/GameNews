@@ -21,8 +21,8 @@ class CategoryController{
 
     async create(req, res){
         let {name} = req.body
-        let user_id = verifyUserAuth(req.headers.authorization)
-        let service = await Category.create(name, user_id)
+        let user_auth = verifyUserAuth(req.headers.authorization)
+        let service = await Category.create(name, user_auth.id)
         return res.status(service.code).json(service.response)
     }
 

@@ -11,14 +11,14 @@ module.exports = (req, res, next) =>{
         try{
             let decoded = jwt.verify(token, secret)
 
-            if(decoded.role === 2 || decode.role === 1){
+            if(decoded.role === 2 || decoded.role === 1){
                 next()
             }
             else{
                 return res.status(403).json({status: 403, message: "Usuário não permitido"})
             }
         }catch(e){
-            return res.status(401).json({status: 401, message: "Usuário não autenticado"})
+            return res.status(401).json({status: 401,message: "Usuário não autenticado"})
         }
     }
     else{

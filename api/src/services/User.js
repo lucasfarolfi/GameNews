@@ -8,6 +8,8 @@ const jwt = require("jsonwebtoken")
 const secret = require("../utils/JWTSecret")
 
 class User{
+
+    // Get all users
     async findAll(){
         try{
             let users = await database.select(['user.id','user.name','user.email','user.role','user.created_at', 'user.updated_at'])
@@ -25,6 +27,7 @@ class User{
         }
     }
 
+    // Get one user
     async findOne(id){
         if(!verifyData.id(id)){
             return{ 
@@ -63,6 +66,7 @@ class User{
         }
     }
     
+    // Create a user
     async create(name,email,password){
         if(!verifyData.createUser(name,email,password) || !verifyData.minPassword(password)){
             return{ 
@@ -106,6 +110,7 @@ class User{
         }
     }
 
+    // Update a user
     async update(id, name, email, password, role){
         if(!verifyData.updateUser(name,email,role) || !verifyData.id(id)){
             return { 
@@ -171,6 +176,7 @@ class User{
         }
     }
     
+    // Delete a user
     async delete(id){
         if(!verifyData.id(id)){
             return { 
@@ -207,6 +213,7 @@ class User{
         }
     }
 
+    // Login
     async validateUser(email, password){
         if(!verifyData.email_Pass(email,password) ){
             return{ 
@@ -266,7 +273,76 @@ class User{
                 }
             }
         }
+    }
+
+    // Get all categories created by user
+    async findCategories(userId, userAuthId, userAuthRole){
+        if(!verifyData.id(userId) || !verifyData.id(userAuthId) || !verifyData.id(userAuthRole)){
+            return { 
+                code: 400, 
+                response: {
+                    status: 400,
+                    message: serverConstants.invalidData
+                }
+            }
+        } else if ((userAuthRole !== 2) && (parseInt(userId) !== userAuthId)){
+            return { 
+                code: 403, 
+                response: {
+                    status: 403,
+                    message: userConstants.userNotAllowed
+                }
+            }
+        }
         
+        try{
+            let categories = await database.select().table("category").where({user_id: parseInt(userId)}).orderBy('id', 'desc')
+            return{code: 200, response: categories}
+        }
+        catch(error){
+            return{
+                code: 500, 
+                response: {
+                    status: 500,
+                    message:serverConstants.internalError
+                }
+            }
+        }   
+    }
+
+    // Get all News created by user
+    async findNews(userId, userAuthId, userAuthRole){ 
+        if(!verifyData.id(userId) || !verifyData.id(userAuthId) || !verifyData.id(userAuthRole)){
+            return { 
+                code: 400, 
+                response: {
+                    status: 400,
+                    message: serverConstants.invalidData
+                }
+            }
+        } else if ((userAuthRole !== 2) && (parseInt(userId) !== userAuthId)){
+            return { 
+                code: 403, 
+                response: {
+                    status: 403,
+                    message: userConstants.userNotAllowed
+                }
+            }
+        }
+        
+        try{
+            let news = await database.select().table("news").where({user_id: parseInt(userId)}).orderBy('id', 'desc')
+            return{code: 200, response: news}
+        }
+        catch(error){
+            return{
+                code: 500, 
+                response: {
+                    status: 500,
+                    message:serverConstants.internalError
+                }
+            }
+        }   
     }
 }
 module.exports = new User()
