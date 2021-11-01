@@ -1,7 +1,4 @@
 const Category = require("../services/Category")
-const categoryConstants = require("../constants/categoryConstants")
-const serverConstants = require("../constants/serverConstants")
-const verifyData = require("../utils/verifyData")
 const verifyUserAuth = require("../utils/verifyUserAuthenticated")
 
 class CategoryController{
@@ -32,15 +29,13 @@ class CategoryController{
     async update(req, res){
         let {id} = req.params
         let {name} = req.body
-        let user_id = verifyUserAuth(req.headers.authorization)
-        let service = await Category.update(parseInt(id), name, user_id)
+        let service = await Category.update(parseInt(id), name)
         return res.status(service.code).json(service.response)
     }
 
     async delete(req, res){
         let {id} = req.params
-        let user_id = verifyUserAuth(req.headers.authorization)
-        let service = await await Category.delete(parseInt(id), user_id)
+        let service = await Category.delete(parseInt(id))
         return res.status(service.code).json(service.response)
     }
 }

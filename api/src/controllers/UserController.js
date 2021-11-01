@@ -1,60 +1,41 @@
 const User = require("../services/User")
+const verifyUserAuth = require("../utils/verifyUserAuthenticated")
 
 class UserController{
     async findAll(req, res){
-        let query = await User.findAll()
-        if(query.msg) return res.status(query.code).json({msg: query.msg})
-            
-        return res.status(query.code).json({users: query.users})
+        let service = await User.findAll()
+        return res.status(service.code).json(service.response)
     }
 
     async findOne(req, res){
         let {id} = req.params
-
-        let query = await User.findOne(id)
-        if(!query.status){
-            return res.status(query.code).json({msg: query.msg})
-        }
-        return res.status(query.code).json({user: query.user})
+        let service = await User.findOne(id)
+        return res.status(service.code).json(service.response)
     }
 
     async create(req, res){
         let {name, email,password} = req.body
-
-        let query = await User.create(name,email,password)
-        return res.status(query.code).json({msg: query.msg})
+        let service = await User.create(name,email,password)
+        return res.status(service.code).json(service.response)
     }
 
     async updateUser(req, res){
         let id = req.params.id
         let {name, email, password, role} = req.body
-
-        let query = await User.update(id, name, email, password, role)
-        return res.status(query.code).json({msg: query.msg})
-    }
-
-    async updatePassword(req, res){
-        let {email, password} = req.body
-
-        let query = await User.updatePassword(email,password)
-        return res.status(query.code).json({msg: query.msg})
+        let service = await User.update(id, name, email, password, role)
+        return res.status(service.code).json(service.response)
     }
     
     async delete(req, res){
         let {id} = req.params
-
-        let query = await User.delete(id)
-        return res.status(query.code).json({msg: query.msg})
+        let service = await User.delete(id)
+        return res.status(service.code).json(service.response)
     }
     
     async login(req, res){
         let {email, password} = req.body
-            
-        let query = await User.validateUser(email, password)
-        if(!query.status){
-            return res.status(query.code).json({msg: query.msg})
-        }
-        return res.status(query.code).json({token: query.token})
+        let service = await User.validateUser(email, password)
+        return res.status(service.code).json(service.response)
     }
 /*
     async findAllCategories(req, res){

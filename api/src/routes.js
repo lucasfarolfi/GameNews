@@ -26,8 +26,7 @@ Router.get("/usuarios", AdminAuth, UserController.findAll)
 Router.get("/usuarios/:id", AdminAuth, UserController.findOne)
 Router.post("/usuarios", AdminAuth, UserController.create)
 Router.post("/usuarios/login", UserController.login)
-Router.put("/usuarios/:id", UserController.updateUser)
-Router.patch("/usuarios", AdminAuth, UserController.updatePassword)
+Router.put("/usuarios/:id", AdminAuth,UserController.updateUser)
 Router.delete("/usuarios/:id", AdminAuth, UserController.delete)
 
 module.exports = Router

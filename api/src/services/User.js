@@ -10,75 +10,134 @@ const secret = require("../utils/JWTSecret")
 class User{
     async findAll(){
         try{
-            let users = await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
+            let users = await database.select(['user.id','user.name','user.email','user.role','user.created_at', 'user.updated_at'])
             .table("user").orderBy('id', 'desc')
 
-            if(users.length === 0){
-                return {status: true,code: 200,msg: userConstants.usersNotFound}
-            }
-
-            return {status: true,code: 200,users}
+            return {code: 200,response: users}
         }catch(error){
-            return{status: false,code: 500, msg: serverConstants.internalError}
+            return{
+                code: 500, 
+                response: {
+                    status: 500,
+                    message:serverConstants.internalError
+                }
+            }
         }
     }
 
     async findOne(id){
         if(!verifyData.id(id)){
-            return{status: false,code: 400,msg: serverConstants.invalidData}
+            return{ 
+                code: 400, 
+                response: {
+                    status: 400,
+                    message: serverConstants.invalidData
+                }
+            }
         }
 
         try{
-            let user = await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
+            let user = await database.select(['user.id','user.name','user.email','user.role','user.created_at', 'user.updated_at'])
             .table("user").where({id: parseInt(id)})
             
             user = user[0]
             if(user == undefined){
-                return {status: false,code: 404,msg: userConstants.userNotFound,}
+                return { 
+                    code: 404, 
+                    response: {
+                        status: 404,
+                        message: userConstants.userNotFound
+                    }
+                }
             }
             
-            return{status: true,code: 200,user}
+            return{code: 200,response: user}
         }catch(error){
-            return{status: false,code: 500, msg: serverConstants.internalError}
+            return{
+                code: 500, 
+                response: {
+                    status: 500,
+                    message:serverConstants.internalError
+                }
+            }
         }
     }
     
     async create(name,email,password){
         if(!verifyData.createUser(name,email,password) || !verifyData.minPassword(password)){
-            if(!verifyData.minPassword(password)){
-                return{status: false,code: 400, msg: userConstants.userSmallPassword}
+            return{ 
+                code: 400, 
+                response: {
+                    status: 400,
+                    message: serverConstants.invalidData
+                }
             }
-            return{status: false,code: 400, msg: serverConstants.invalidData}
         }
 
         let findEmail = await database.select().table("user").where({email})
-        if(findEmail.length > 0) return{status: false,code: 406, msg: userConstants.userEmailExists}
+        if(findEmail.length > 0) 
+            return{ 
+                code: 409, 
+                response: {
+                    status: 409,
+                    message: userConstants.userEmailExists
+                }
+            }
 
         let hash_password = await bcrypt.hash(password, salt)
         try{ 
             await database.insert({
                 name, email, password: hash_password, role:0
             }).table("user")
+
+            let userCreated = await database.select(['user.id','user.name','user.email','user.role','user.created_at', 'user.updated_at'])
+            .table('user').where({email})
             
-            return {status: true,code: 200, msg: userConstants.userCreateSuccess}
+            return {code: 200, response: userCreated[0]}
         }
         catch(error){
-            return{status: false,code: 500, msg: serverConstants.internalError}
+            return{
+                code: 500, 
+                response: {
+                    status: 500,
+                    message:serverConstants.internalError
+                }
+            }
         }
     }
 
     async update(id, name, email, password, role){
         if(!verifyData.updateUser(name,email,role) || !verifyData.id(id)){
-            return {status: false,code: 400, msg: serverConstants.invalidData}
+            return { 
+                code: 400, 
+                response: {
+                    status: 400,
+                    message: serverConstants.invalidData
+                }
+            }
         }
         
         try{
             let user_id = parseInt(id)
             let findUser = await database.select().table("user").where({id: user_id})
-            if(findUser.length === 0) return{status: false,code: 404, msg: userConstants.userNotFound}
+            if(findUser.length === 0) 
+                return{ 
+                    code: 404, 
+                    response: {
+                        status: 404,
+                        message: userConstants.userNotFound
+                    }
+                }
 
             let findEmail = await database.select().table("user").whereNot({id}).andWhere({email})
-            if(findEmail.length > 0) return{status: false,code: 406, msg: userConstants.userEmailExists}
+            if(findEmail.length > 0) 
+                return{ 
+                    code: 409, 
+                    response: {
+                        status: 409,
+                        message: userConstants.userEmailExists
+                    }
+                }
             
             if(password == undefined || password == ''){
                 await database.where({id: user_id}).update({
@@ -98,60 +157,76 @@ class User{
                     updated_at: new Date()
                 }).table("user")
             }
-            return{status: true,code: 200, msg: userConstants.userUpdateSuccess}
+            return{code: 204, response: undefined}
         
         }catch(error){
             console.log(error)
-            return{status: false,code: 500, msg: serverConstants.internalError}
-        }
-    }
-
-    async updatePassword(email,password){
-        if(!verifyData.email_Pass(email,password) || !verifyData.minPassword(password)){
-            if(!verifyData.minPassword(password)){
-                return{status: false,code: 400, msg: userConstants.userSmallPassword}
+            return{
+                code: 500, 
+                response: {
+                    status: 500,
+                    message:serverConstants.internalError
+                }
             }
-            return{status: false,code: 400, msg: serverConstants.invalidData}
-        }
-        
-        try{
-            let findEmail = await database.select().table("user").where({email})
-            if(findEmail.length === 0) return{status: false,code: 406, msg: userConstants.userNotFound}
-
-            let newPassword = await bcrypt.hash(password, salt)
-            await database.where({email}).table("user").update({password: newPassword,updated_at: new Date()})
-        
-            return {status: true,code: 200, msg: userConstants.userUpdateSuccess}
-        }catch(error){
-            return{status: false,code: 500, msg: serverConstants.internalError}
         }
     }
     
     async delete(id){
         if(!verifyData.id(id)){
-            return {status: false,code: 400, msg: serverConstants.invalidData}
+            return { 
+                code: 400, 
+                response: {
+                    status: 400,
+                    message: serverConstants.invalidData
+                }
+            }
         }
         
         try{
             let findUser = await database.select().table("user").where({id: parseInt(id)})
-            if(findUser.length === 0) return{status: false,code: 404, msg: userConstants.userNotFound}
+            if(findUser.length === 0) 
+                return{ 
+                    code: 404, 
+                    response: {
+                        status: 404,
+                        message: userConstants.userNotFound
+                    }
+                }
 
             await database.delete().table("user").where({id: parseInt(id)})
-            return{status: true,code: 200, msg: userConstants.userDeleteSuccess}
+            return{code: 204, response: undefined}
         }
         catch(error){
-            return{status: false,code: 500, msg: serverConstants.internalError}
+            return{
+                code: 500, 
+                response: {
+                    status: 500,
+                    message:serverConstants.internalError
+                }
+            }
         }
     }
 
     async validateUser(email, password){
         if(!verifyData.email_Pass(email,password) ){
-            return{status: false,code: 400, msg: serverConstants.invalidData}
+            return{ 
+                code: 400, 
+                response: {
+                    status: 400,
+                    message: serverConstants.invalidData
+                }
+            }
         }
 
         let user = await database.select().table("user").where({email})
         if(user.length === 0){
-            return{status: false,code: 404, msg: userConstants.userIncorrect}
+            return{ 
+                code: 401, 
+                response: {
+                    status: 401,
+                    message: userConstants.userIncorrect
+                }
+            }
         }
         user = user[0]
 
@@ -159,13 +234,37 @@ class User{
             let isPassword = await bcrypt.compare(password, user.password)
 
             if(!isPassword){
-                return {status: false,code: 406, msg: userConstants.userIncorrectPassword}
+                return { 
+                    code: 401, 
+                    response: {
+                        status: 401,
+                        message: userConstants.userIncorrect
+                    }
+                }
             }
 
             let token = jwt.sign({id: user.id, name: user.name, email: user.email, role: user.role}, secret)
-            return {status: true,code: 200, token}
-        }catch(error){console.log(error)
-            return{status: false,code: 500, msg: serverConstants.internalError}
+            return { 
+                code: 200, 
+                response: {
+                    token,
+                    user: {
+                        id: user.id, 
+                        name: user.name, 
+                        email: user.email, 
+                        role: user.role
+                    }
+                }
+            }
+        }catch(error){
+            console.log(error)
+            return{
+                code: 500, 
+                response: {
+                    status: 500,
+                    message:serverConstants.internalError
+                }
+            }
         }
         
     }

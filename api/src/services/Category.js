@@ -88,10 +88,11 @@ class Category{
         
         try{
             let findUser = await database.select().table("user").where({id: parseInt(userId)})
-            if(findUser.length === 0) return{code: 404, response: {
-                status: 404,
-                message: userConstants.userNotFound
-            }}
+            if(findUser.length === 0) 
+                return{code: 401, response: {
+                    status: 404,
+                    message: userConstants.userNotAuthenticated
+                }}
             
             let slug = slugify(name).toLowerCase()
 
@@ -120,7 +121,7 @@ class Category{
         }
     }
 
-    async update(id, name, userId){
+    async update(id, name){
         if(!verifyData.name(name) || !verifyData.id(id)){
             return{ 
                 code: 400, 
@@ -132,12 +133,6 @@ class Category{
         }
 
         try{
-            let findUser = await database.select().table("user").where({id: parseInt(userId)})
-            if(findUser.length === 0) 
-                return{code: 404, response: {
-                status: 404,
-                message: userConstants.userNotFound
-            }}
 
             let findCategory = await database.select().table("category").where({id})
             if(findCategory.length === 0)
@@ -171,7 +166,7 @@ class Category{
         }
     }
 
-    async delete(id, userId){
+    async delete(id){
         if(!verifyData.id(id)){
             return{ 
                 code: 400, 
@@ -183,12 +178,6 @@ class Category{
         }
 
         try{
-            let findUser = await database.select().table("user").where({id: parseInt(userId)})
-            if(findUser.length === 0) 
-                return{code: 404, response: {
-                status: 404,
-                message: userConstants.userNotFound
-            }}
             
             let findCategory = await database.select().table("category").where({id})
             if(findCategory.length === 0)
