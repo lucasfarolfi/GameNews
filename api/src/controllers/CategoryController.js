@@ -2,57 +2,46 @@ const Category = require("../services/Category")
 const categoryConstants = require("../constants/categoryConstants")
 const serverConstants = require("../constants/serverConstants")
 const verifyData = require("../utils/verifyData")
+const verifyUserAuth = require("../utils/verifyUserAuthenticated")
 
 class CategoryController{
     async findAll(req, res){
-        let {user} = req.query
-        let query = await Category.findAll(user)
-        if(!query.code || query.msg){
-            return res.status(query.code).json({msg: query.msg})
-        }
-        return res.status(query.code).json({categories: query.categories})
+        let service = await Category.findAll()
+        return res.status(service.code).json(service.response)
     }
 
     async findById(req, res){
         let {id} = req.params
-
-        let query = await Category.findById(id)
-        if(!query.code || query.msg){
-            return res.status(query.code).json({msg: query.msg})
-        }
-        return res.status(query.code).json({categories: query.category})
+        let service = await Category.findById(id)
+        return res.status(service.code).json(service.response)
     }
 
     async findBySlug(req, res){
         let {slug} = req.params
-
-        let query = await Category.findBySlug(slug)
-        if(!query.code || query.msg){
-            return res.status(query.code).json({msg: query.msg})
-        }
-        return res.status(query.code).json({categories: query.category})
+        let service = await Category.findBySlug(slug)
+        return res.status(service.code).json(service.response)
     }
 
     async create(req, res){
-        let {name, user_id} = req.body
-
-        let query = await Category.create(name, user_id)
-        return res.status(query.code).json({msg: query.msg})
+        let {name} = req.body
+        let user_id = verifyUserAuth(req.headers.authorization)
+        let service = await Category.create(name, user_id)
+        return res.status(service.code).json(service.response)
     }
 
     async update(req, res){
         let {id} = req.params
         let {name} = req.body
-
-        let query = await Category.update(parseInt(id), name)
-        return res.status(query.code).json({msg: query.msg})
+        let user_id = verifyUserAuth(req.headers.authorization)
+        let service = await Category.update(parseInt(id), name, user_id)
+        return res.status(service.code).json(service.response)
     }
 
     async delete(req, res){
         let {id} = req.params
-
-        let query = await await Category.delete(parseInt(id))
-        return res.status(query.code).json({msg: query.msg})
+        let user_id = verifyUserAuth(req.headers.authorization)
+        let service = await await Category.delete(parseInt(id), user_id)
+        return res.status(service.code).json(service.response)
     }
 }
 module.exports = new CategoryController()

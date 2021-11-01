@@ -15,13 +15,13 @@ module.exports = (req, res, next) =>{
                 next()
             }
             else{
-                return res.status(401).json({msg: "Usuário não permitido"})
+                return res.status(403).json({status: 403, message: "Usuário não permitido"})
             }
         }catch(e){
-            return res.status(401).json({msg: "Usuário não autenticado"})
+            return res.status(401).json({status: 401, message: "Usuário não autenticado"})
         }
     }
     else{
-        return res.status(401).json({msg: "Usuário não autenticado"})
+        return res.status(401).json({status: 401, message: "Usuário não autenticado"})
     }
 }
