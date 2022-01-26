@@ -1,42 +1,123 @@
 const Category = require("../services/Category")
-const verifyUserAuth = require("../utils/verifyUserAuthenticated")
+const categoryConstants = require("../constants/categoryConstants")
+const serverConstants = require("../constants/serverConstants")
+const verifyData = require("../utils/verifyData")
 
 class CategoryController{
     async findAll(req, res){
-        let service = await Category.findAll()
-        return res.status(service.code).json(service.response)
+        try{
+            let categories = await Category.findAll()
+            res.json(categories)
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
+        }
     }
 
     async findById(req, res){
-        let {id} = req.params
-        let service = await Category.findById(id)
-        return res.status(service.code).json(service.response)
+        try{
+            let {id} = req.params
+
+            if(!verifyData.id(id)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+            id = parseInt(id)
+
+            let category = await Category.findById(id)
+            if(category == undefined){
+                return res.status(404).json({msg: categoryConstants.notFound})
+            }
+
+            res.status(200).json(category)
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
+        }
     }
 
     async findBySlug(req, res){
-        let {slug} = req.params
-        let service = await Category.findBySlug(slug)
-        return res.status(service.code).json(service.response)
+        try{
+            let {slug} = req.params
+
+            if(!verifyData.slug(slug)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+
+            let category = await Category.findBySlug(slug)
+            if(category == undefined){
+                return res.status(404).json({msg: categoryConstants.notFound})
+            }
+
+            res.status(200).json(category)
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
+        }
     }
 
     async create(req, res){
-        let {name} = req.body
-        let user_auth = verifyUserAuth(req.headers.authorization)
-        let service = await Category.create(name, user_auth.id)
-        return res.status(service.code).json(service.response)
+        try{
+            const {name} = req.body;
+
+            if(!verifyData.name(name)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+
+            let categoryExists = await Category.verifySlug(name)
+            if(categoryExists){
+                return res.status(406).json({msg: categoryConstants.alreadyExists})
+            }
+
+            await Category.create(name)
+            res.json({status: categoryConstants.createdSuccess})
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
+        }
     }
 
     async update(req, res){
-        let {id} = req.params
-        let {name} = req.body
-        let service = await Category.update(parseInt(id), name)
-        return res.status(service.code).json(service.response)
+        try{
+            let id = req.params.id
+            let name = req.body.name
+
+            if(!verifyData.id(id) || !verifyData.name(name)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+            id = parseInt(id)
+
+            let categoryExists = await Category.verifyId(id)
+            if(!categoryExists){
+                return res.status(404).json({msg: categoryConstants.notFound})
+            }
+
+            let nameExists = await Category.verifySlug(name)
+            if(nameExists){
+                return res.status(406).json({msg: categoryConstants.alreadyExists})
+            }
+
+            await Category.update(id, name)
+            res.status(200).json({status: categoryConstants.updatedSuccess})
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
+        }
     }
 
     async delete(req, res){
-        let {id} = req.params
-        let service = await Category.delete(parseInt(id))
-        return res.status(service.code).json(service.response)
+        try{
+            let id = req.params.id
+        
+            if(!verifyData.id(id)){
+                return res.status(400).json({msg: serverConstants.invalidData})
+            }
+            id = parseInt(id)
+
+            let categoryExists = await Category.verifyId(id)
+            if(!categoryExists){
+                return res.status(404).json({msg: categoryConstants.notFound})
+            }
+
+            await Category.delete(id)
+            res.status(200).json({status: categoryConstants.deletedSuccess})
+        }catch(e){
+            res.status(500).json({msg: serverConstants.internalError})
+        }
     }
 }
 module.exports = new CategoryController()
