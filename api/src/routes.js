@@ -2,11 +2,8 @@ const Router = require('express').Router()
 const NewsController = require('./controllers/NewsController')
 const CategoryController = require('./controllers/CategoryController')
 const UserController = require('./controllers/UserController')
-<<<<<<< HEAD
 const AdminAuth = require("./middleware/AdminAuth")
 const AuthorAuth = require("./middleware/AuthorAuth")
-=======
->>>>>>> parent of adf9889 (Created auth Middlewares and use JWT)
 
 //News
 Router.get("/noticias", NewsController.findAll)

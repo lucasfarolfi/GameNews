@@ -1,12 +1,5 @@
-<<<<<<< HEAD
 const User = require("../services/User")
 const verifyUserAuth = require("../utils/verifyUserAuthenticated")
-=======
-const User = require("../models/User")
-const userConstants = require("../constants/userConstants")
-const serverConstants = require("../constants/serverConstants")
-const verifyData = require("../utils/verifyData")
->>>>>>> parent of adf9889 (Created auth Middlewares and use JWT)
 
 class UserController{
     async findAll(req, res){
