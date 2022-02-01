@@ -11,5 +11,11 @@ module.exports = {
     userIncorrectPassword: "Senha incorreta.",
     usersNotFound: "Não há nenhum usuário registrado!",
     userNotAuthenticated: "Usuário não autenticado",
-    userNotAllowed: "Usuário não permitido"
+    userNotAllowed: "Usuário não permitido",
+    incorrect_login: "E-mail e/ou senha incorretos",
+    INVALID_DATA: "Invalid user data",
+    NOT_FOUND: "User not found",
+    EMAIL_EXISTS: "E-mail already exists",
+    CREATED_SUCCESS: "User registered successfully",
+    UPDATED_SUCCESS: "User updated successfully"
 }

@@ -3,23 +3,25 @@ const Slugify = require("slugify")
 const bcrypt = require("bcrypt")
 const salt =  parseInt(process.env.HASH_SALT)
 
-class User{
-    async findAll(){
+class UserRepository{
+    async find_all(){
         try{
             return await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
             .table("user").orderBy('id', 'desc')
         }catch(error){
             console.log(error)
+            throw error
         }
     }
 
-    async findOne(id){
+    async find_one(id){
         try{
             let user = await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
             .table("user").where({id})
             return user[0]
         }catch(error){
             console.log(error)
+            throw error
         }
     }
 
@@ -36,7 +38,21 @@ class User{
         }
     }
 
-    async verifyId(id){
+    async create(name,email,password){
+        let hash_password = await bcrypt.hash(password, salt)
+
+        try{
+            return await database.insert({
+                name, email, password: hash_password, role:0
+            }).table("user")
+        }
+        catch(error){
+            console.log(error)
+            throw error
+        }
+    }
+
+    async verify_id(id){
         try{
             let findUser = await database.select().table("user").where({id})
 
@@ -49,19 +65,7 @@ class User{
         }
     }
 
-    async create(name,email,password){
-        let slug = Slugify(name).toLowerCase()
-        let hash_password = await bcrypt.hash(password, salt)
-        try{
-            return await database.insert({
-                name, slug, email, password: hash_password, role:0
-            }).table("user")
-        }
-        catch(error){
-            console.log(error)
-            throw error
-        }
-    }
+    
 
     async delete(id){
         try{
@@ -73,38 +77,45 @@ class User{
     }
 
     async update(id, name, email, password, role){
-        let slug = Slugify(name).toLowerCase()
+        try{
+            let slug = Slugify(name).toLowerCase()
 
-        if(password == undefined || password == ''){
-            try{
-                await database.where({id}).update({
-                    name,
-                    slug,
-                    email,
-                    role,
-                    updated_at: new Date()
-                }).table("user")
-            }catch(error){
-                console.log(error)
+            // If the password not be passed, it will not change
+            if(password == undefined || password == ''){
+                try{
+                    await database.where({id}).update({
+                        name,
+                        slug,
+                        email,
+                        role,
+                        updated_at: new Date()
+                    }).table("user")
+                }catch(error){
+                    console.log(error)
+                }
+            }
+            // If password be passed, it will change
+            else{
+                let hash = await bcrypt.hash(password, salt)
+
+                try{
+                    await database.where({id}).update({
+                        name,
+                        slug,
+                        email,
+                        password: hash,
+                        role,
+                        updated_at: new Date()
+                    }).table("user")
+                }catch(error){
+                    console.log(error)
+                }
             }
         }
-        else{
-            let hash = await bcrypt.hash(password, salt)
-
-            try{
-                await database.where({id}).update({
-                    name,
-                    slug,
-                    email,
-                    password: hash,
-                    role,
-                    updated_at: new Date()
-                }).table("user")
-            }catch(error){
-                console.log(error)
-            }
+        catch(error){
+            console.log(error)
+            throw error
         }
-        
     }
 
     async updatePassword(email,password){
@@ -139,4 +150,4 @@ class User{
         
     }
 }
-module.exports = new User()
+module.exports = new UserRepository()
