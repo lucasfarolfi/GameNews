@@ -8,7 +8,7 @@ const secret = require("../utils/JWTSecret")
 const jwt = require("jsonwebtoken")
 const { validationResult } = require("express-validator")
 
-class UserController{
+class UserService{
     async find_all(){
         try{
             let users = await UserRepository.find_all()
@@ -65,7 +65,7 @@ class UserController{
     }
 
     // Need to fix here
-    async update_user(req, res){
+    async update_user(req){
         try{
             // Validation
             const validation_errors = validationResult(req)
@@ -78,7 +78,7 @@ class UserController{
 
             let userFound = await UserRepository.find_one(id)
             if(userFound == undefined){
-                return res.status(404).json({msg: userConstants.NOT_FOUND})
+                return {status: 404, data: {msg: userConstants.NOT_FOUND}}
             }
 
             // Verify if e-mail already registered
@@ -140,4 +140,4 @@ class UserController{
     }
 }
 
-module.exports = new UserController()
+module.exports = new UserService()
