@@ -1,54 +1,55 @@
-const News = require("../services/News")
-const newsConstants = require("../constants/newsConstants")
-const serverConstants = require("../constants/serverConstants")
-const verifyData = require("../utils/verifyData")
+const NewsRepository = require("../repository/NewsRepository")
+const NewsConstants = require("../constants/NewsConstants")
+const ServerConstants = require("../constants/ServerConstants")
+const { validationResult } = require("express-validator")
 
 class NewsController{
-    async findAll(req, res){
+    async get_all(req, res){
         try{
-            let news = await News.findAll()
+            let news = await NewsRepository.find_all()
             res.json(news)
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
     
-    async findById(req, res){
+    async get_by_id(req, res){
         try{
-            let id = req.params.id
-
-            if(!verifyData.id(id)){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            let {id} = req.params
+            
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: NewsConstants.INVALID_DATA})
             }
-            id = parseInt(id)
-
-            let news = await News.findById(id)
+            
+            let news = await NewsRepository.find_by_id(id)
             if(news == undefined){
-                return res.status(404).json({msg: newsConstants.notFound})
+                return res.status(404).json({msg: NewsConstants.NOT_FOUND})
             }
 
             res.status(200).json(news)
         }catch(e){
-             res.status(500).json({msg: serverConstants.internalError})
+             res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
     
-    async findBySlug(req, res){
+    async find_by_slug(req, res){
         try{
-            let slug = req.params.slug
+            let {slug} = req.params
         
-            if(!verifyData.slug(slug)){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: NewsConstants.INVALID_DATA})
             }
 
-            let newsExists = await News.findBySlug(slug)
+            let newsExists = await NewsRepository.find_by_slug(slug)
             if(newsExists == undefined){
-                return res.status(404).json({msg: newsConstants.notFound})
+                return res.status(404).json({msg: NewsConstants.NOT_FOUND})
             }
 
             res.status(200).json(newsExists)
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -56,67 +57,69 @@ class NewsController{
         try{
             let {title, category_id, body} = req.body
 
-            if(!verifyData.createNews(title, category_id, body)){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: NewsConstants.INVALID_DATA})
             }
 
-            let newsExists = await News.verifyTitle(title)
+            let newsExists = await NewsRepository.verify_title(title)
             if(newsExists){
-                return res.status(406).json({msg: newsConstants.alreadyExists})
+                return res.status(406).json({msg: NewsConstants.ALREADY_EXISTS})
             }
 
-            await News.create(title, category_id, body)
-            res.json({status: newsConstants.createdSuccess})
+            await NewsRepository.create(title, category_id, body)
+            res.json({status: NewsConstants.CREATED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
     async delete(req, res){
         try{
-            let id = req.params.id
-
-            if(id == undefined || id == ''){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            let {id} = req.params
+            
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: NewsConstants.INVALID_DATA})
             }
-
-            let newsExists = News.findById(parseInt(id))
+            
+            let newsExists = await NewsRepository.find_by_id(id)
             if(!newsExists){
-                return res.status(404).json({msg: newsConstants.notFound})
+                return res.status(404).json({msg: NewsConstants.NOT_FOUND})
             }
 
-            await News.deleteById(parseInt(id))
-            res.status(200).json({status: newsConstants.deletedSuccess})
+            await NewsRepository.delete_by_id(id)
+            res.status(200).json({status: NewsConstants.DELETED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
     async update(req, res){
         try{
-            let id = req.params.id
+            let {id} = req.params
             let {title, category_id, body} = req.body
 
-            if(!verifyData.id(id) || !verifyData.createNews(title,category_id,body)){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: NewsConstants.INVALID_DATA})
             }
-            id = parseInt(id)
 
-            let newsExists = await News.verifyTitleById(id, title)
+            let newsExists = await NewsRepository.verify_title_by_id(id, title)
             if(newsExists){
-                return res.status(406).json({msg: newsConstants.alreadyExists})
+                return res.status(406).json({msg: NewsConstants.ALREADY_EXISTS})
             }
 
-            let verifyId = await News.findById(id)
-            console.log(verifyId)
+            let verifyId = await NewsRepository.find_by_id(id)
+            
             if(!verifyId){
-                return res.status(404).json({msg: newsConstants.notFound})
+                return res.status(404).json({msg: NewsConstants.NOT_FOUND})
             }
 
-            await News.update(id, title, category_id, body)
-            res.json({status: newsConstants.updatedSuccess})
+            await NewsRepository.update(id, title, category_id, body)
+            res.json({status: NewsConstants.UPDATED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 }

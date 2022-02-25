@@ -1,39 +1,37 @@
-const User = require("../services/User")
-const userConstants = require("../constants/userConstants")
-const serverConstants = require("../constants/serverConstants")
-const verifyData = require("../utils/verifyData")
-const secret = require("../utils/JWTSecret")
-const jwt = require("jsonwebtoken")
+const UserRepository = require("../repository/UserRepository")
+const UserConstants = require("../constants/UserConstants")
+const ServerConstants = require("../constants/ServerConstants")
+const { validationResult } = require("express-validator")
 
 class UserController{
-    async findAll(req, res){
+    async get_all(req, res){
         try{
-            let users = await User.findAll()
+            let users = await UserRepository.find_all()
             res.status(200).json(users)
         }catch(e){
             console.log(e)
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
-    async findUser(req, res){
+    async get_by_id(req, res){
         try{
             let {id} = req.params
             
-            if(!verifyData.id(id)){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: UserConstants.INVALID_DATA})
             }
-            id = parseInt(id)
 
-            let user = await User.findOne(id)
+            let user = await UserRepository.find_one(id)
             if(user == undefined){
-                return res.status(404).json({msg: userConstants.userNotFound})
+                return res.status(404).json({msg: UserConstants.NOT_FOUND})
             }
 
             res.status(200).json(user)
         }catch(e){
             console.log(e)
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -41,71 +39,43 @@ class UserController{
         try{
             let {name, email,password} = req.body
 
-            //Null input values
-            if(!verifyData.createUser(name,email,password)){
-                return res.status(400).json({msg: serverConstants.invalidData})
-            }
-            //Small password
-            if(!verifyData.minPassword(password)){
-                return res.status(400).json({msg: userConstants.userSmallPassword})
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: UserConstants.INVALID_DATA})
             }
 
-            //Email almost exists
-            let findEmail = await User.verifyEmail(email)
+            // Verify if Email almost exists
+            let findEmail = await UserRepository.verify_email(email)
             if(findEmail){
-                return res.status(406).json({msg: userConstants.userEmailExists})
+                return res.status(406).json({msg: UserConstants.EMAIL_ALREADY_EXISTS})
             }
 
-            await User.create(name,email,password)
-            res.status(200).json({status: userConstants.userCreateSuccess})
+            await UserRepository.create(name,email,password)
+            res.status(200).json({status: UserConstants.CREATED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
-    async updateUser(req, res){
+    async update(req, res){
         try{
-            let id = req.params.id
+            let {id} = req.params
             let {name, email, password, role} = req.body
 
-            if(!verifyData.updateUser(name,email,role) || !verifyData.id(id)){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: UserConstants.INVALID_DATA})
             }
 
-            id = parseInt(id)
-            let userExists = await User.verifyId(id)
+            let userExists = await UserRepository.verify_id(id)
             if(!userExists){
-                return res.status(404).json({msg: userConstants.userNotFound})
+                return res.status(404).json({msg: UserConstants.NOT_FOUND})
             }
 
-            await User.update(id, name, email, password, role)
-            res.status(200).json({status: userConstants.userUpdateSuccess})
+            await UserRepository.update(id, name, email, password, role)
+            res.status(200).json({status: UserConstants.UPDATED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
-        }
-    }
-
-    async updatePassword(req, res){
-        try{
-            let {email, password} = req.body
-
-            if(!verifyData.email_Pass(email,password)){
-                return res.status(400).json({msg: serverConstants.invalidData})
-            }
-
-            if(!verifyData.minPassword(password)){
-                return res.status(401).json({msg: userConstants.userSmallPassword})
-            }
-
-            let userExists = await User.verifyEmail(email)
-            if(!userExists){
-                return res.status(404).json({msg: userConstants.userIncorrect})
-            }
-
-            await User.updatePassword(email,password)
-            res.status(200).json({status: userConstants.passwordUpdateSuccess})
-        }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -113,46 +83,20 @@ class UserController{
         try{
             let {id} = req.params
 
-            if(!verifyData.id(id)){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: UserConstants.INVALID_DATA})
             }
-            id = parseInt(id)
 
-            let idExists = await User.verifyId(id)
+            let idExists = await UserRepository.verify_id(id)
             if(!idExists){
-                return res.status(404).json({msg: userConstants.userIncorrect})
+                return res.status(404).json({msg: UserConstants.NOT_FOUND})
             }
 
-            await User.delete(id)
-            res.status(200).json({status: userConstants.userDeleteSuccess})
+            await UserRepository.delete(id)
+            res.status(200).json({status: UserConstants.DELETED_SUCCESS})
         }catch(e){
-              res.status(500).json({msg: serverConstants.internalError})
-        }
-    }
-    
-    async login(req, res){
-        try{
-            let {email, password} = req.body
-
-            if(!verifyData.email_Pass(email,password)){
-                return res.status(400).json({msg: serverConstants.invalidData})
-            }
-
-            let findEmail = await User.verifyEmail(email)
-            if(!findEmail){
-                return res.status(404).json({msg: userConstants.userIncorrect})
-            }
-            
-            let user = await User.validateUser(email, password)
-            
-            if(user == undefined){
-                return res.status(406).json({msg: userConstants.userIncorrectPassword})
-            }
-            
-            let token = jwt.sign({id: user.id, name: user.name, email: user.email, role: user.role}, secret)
-            res.status(200).json({token: token})
-        }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+              res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 }

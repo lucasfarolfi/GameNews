@@ -1,4 +1,3 @@
 module.exports = {
-    invalidData: "Dados inválidos.",
-    internalError: "Erro interno."
+    INTERNAL_ERROR: "Erro interno."
 }

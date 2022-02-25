@@ -1,8 +1,8 @@
 module.exports = {
-    alreadyExists: "Esta categoria já existe.",
-    createdSuccess: "Categoria criada com sucesso.",
-    notFound: "Categoria não encontrada ou não existe.",
-    updatedSuccess: "Categoria editada com sucesso.",
-    deletedSuccess: "Categoria deletada com sucesso.",
-    categoriesNotRegistered: "Não há nenhuma categoria registrada!"
+    INVALID_DATA: "Dados de categoria inválidos",
+    NOT_FOUND: "Categoria não encontrada ou não existe",
+    ALREADY_EXISTS: "Esta categoria já existe",
+    CREATED_SUCCESS: "Categoria criada com sucesso",
+    UPDATED_SUCCESS: "Categoria editada com sucesso",
+    DELETED_SUCCESS: "Categoria deletada com sucesso"
 }

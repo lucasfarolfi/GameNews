@@ -1,8 +1,8 @@
 const { default: slugify } = require("slugify")
 const database = require("../database/config")
 
-class Category{
-    async findAll(){
+class CategoryRepository{
+    async find_all(){
         try{
             return await database.select(['category.*', 'user.name as user_name'])
             .table("category").orderBy('id', 'desc')
@@ -13,7 +13,7 @@ class Category{
         }
     }
 
-    async findById(id){
+    async find_by_id(id){
         try{
             let category = await database.select(['category.*', 'user.name as user_name'])
             .from("category").where('category.id', id)
@@ -25,7 +25,7 @@ class Category{
         }
     }
 
-    async findBySlug(slug){
+    async find_by_slug(slug){
         try{
             let category = await database.select(['category.*', 'user.name as user_name'])
             .from("category").where('category.slug', slug)
@@ -37,7 +37,7 @@ class Category{
         }
     }
 
-    async verifySlug(name){
+    async verify_slug(name){
         let slug = slugify(name).toLowerCase()
         try{
             let findCategory = await database.select().table("category").where({slug})
@@ -49,7 +49,7 @@ class Category{
         }
     }
 
-    async verifyId(id){
+    async verify_id(id){
         try{
             let findCategory = await database.select().table("category").where({id})
             if(findCategory.length > 0) return true
@@ -89,4 +89,4 @@ class Category{
     }
 
 }
-module.exports = new Category()
+module.exports = new CategoryRepository()

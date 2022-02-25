@@ -1,8 +1,8 @@
 const Slugify = require('slugify');
 const database = require('../database/config')
 
-class News{
-    async findAll(){
+class NewsRepository{
+    async find_all(){
         try{
             let news = await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
             .from("news").orderBy('id', 'desc')
@@ -12,10 +12,11 @@ class News{
         }
         catch(error){
             console.log(error)
+            throw error
         }
     }
     
-    async findById(id){
+    async find_by_id(id){
         try{
             let news = await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
             .from("news").where('news.id', id)
@@ -28,7 +29,7 @@ class News{
         }
     }
 
-    async findBySlug(slug){
+    async find_by_slug(slug){
         try{
             let news = await await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
             .from("news").where('news.slug', slug)
@@ -41,7 +42,7 @@ class News{
         }
     }
 
-    async verifyTitle(title){
+    async verify_title(title){
         let slug = Slugify(title).toLowerCase()
 
         try{
@@ -53,7 +54,7 @@ class News{
         }
     }
 
-    async verifyTitleById(id, title){
+    async verify_title_by_id(id, title){
         let slug = Slugify(title).toLowerCase()
 
         try{
@@ -65,7 +66,7 @@ class News{
         }
     }
 
-    async verifyId(id){
+    async verify_id(id){
         try{
             let news = await database.select().table("news").where({id})
             if(news.length > 0) return true
@@ -104,7 +105,7 @@ class News{
         }
     }
 
-    async deleteById(id){
+    async delete_by_id(id){
         try{
             await database.delete().table("news").where({id})
         } catch(error){
@@ -113,4 +114,4 @@ class News{
     }
 }
 
-module.exports = new News()
+module.exports = new NewsRepository()

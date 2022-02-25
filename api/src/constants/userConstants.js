@@ -1,15 +1,8 @@
 module.exports = {
-    userCreateSuccess: "Usuário foi criado com sucesso.",
-    userNotFound: "Usuário não foi encontrado ou não existe.",
-    userAlreadyExists: "Usuário já existe.",
-    userSmallPassword: "A senha deve ter no mínimo 8 caracteres.",
-    userEmailExists: "E-mail já cadastrado.",
-    userUpdateSuccess: "Usuário foi atualizado com sucesso.",
-    userIncorrect: "Usuário incorreto ou não existe.",
-    passwordUpdateSuccess: "Senha atualizada com sucesso.",
-    userDeleteSuccess: "Usuário foi deletado com sucesso.",
-    userIncorrectPassword: "Senha incorreta.",
-    usersNotFound: "Não há nenhum usuário registrado!",
-    userNotAuthenticated: "Usuário não autenticado",
-    userNotAllowed: "Usuário não permitido"
+    INVALID_DATA: "Dado de usuário inválido",
+    NOT_FOUND: "Usuário não encontrado ou não existe",
+    EMAIL_ALREADY_EXISTS: "E-mail já cadastrado",
+    CREATED_SUCCESS: "Usuário foi criado com sucesso",
+    UPDATED_SUCCESS: "Usuário foi atualizado com sucesso",
+    DELETED_SUCCESS: "Usuário foi deletado com sucesso"
 }

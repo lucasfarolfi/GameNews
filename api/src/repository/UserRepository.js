@@ -3,17 +3,18 @@ const Slugify = require("slugify")
 const bcrypt = require("bcrypt")
 const salt =  parseInt(process.env.HASH_SALT)
 
-class User{
-    async findAll(){
+class UserRepository{
+    async find_all(){
         try{
             return await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
             .table("user").orderBy('id', 'desc')
         }catch(error){
             console.log(error)
+            throw error
         }
     }
 
-    async findOne(id){
+    async find_one(id){
         try{
             let user = await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
             .table("user").where({id})
@@ -23,7 +24,7 @@ class User{
         }
     }
 
-    async verifyEmail(email){
+    async verify_email(email){
         try{
             let findEmail = await database.select().table("user").where({email})
 
@@ -36,7 +37,7 @@ class User{
         }
     }
 
-    async verifyId(id){
+    async verify_id(id){
         try{
             let findUser = await database.select().table("user").where({id})
 
@@ -78,13 +79,13 @@ class User{
             try{
                 await database.where({id}).update({
                     name,
-                    slug,
                     email,
                     role,
                     updated_at: new Date()
                 }).table("user")
             }catch(error){
                 console.log(error)
+                throw error
             }
         }
         else{
@@ -93,7 +94,6 @@ class User{
             try{
                 await database.where({id}).update({
                     name,
-                    slug,
                     email,
                     password: hash,
                     role,
@@ -101,41 +101,10 @@ class User{
                 }).table("user")
             }catch(error){
                 console.log(error)
+                throw error
             }
-        }
-        
-    }
-
-    async updatePassword(email,password){
-        let newPassword = await bcrypt.hash(password, salt)
-        try{
-            await database.where({email}).table("user").update({password: newPassword,updated_at: new Date()})
-        }catch(error){
-            console.log(error)
-        }
-    }
-
-    async validateUser(email, password){
-        let user = await database.select().table("user").where({email})
-        user = user[0]
-
-        try{
-            let isPassword = await bcrypt.compare(password, user.password)
-
-            if(!isPassword){
-                return undefined
-            }
-
-            return {
-                id:user.id,
-                name: user.name,
-                email: user.email,
-                role: user.role
-            }
-        }catch(error){
-            console.log(error)
         }
         
     }
 }
-module.exports = new User()
+module.exports = new UserRepository()

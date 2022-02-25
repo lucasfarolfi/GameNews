@@ -1,54 +1,55 @@
-const Category = require("../services/Category")
-const categoryConstants = require("../constants/categoryConstants")
-const serverConstants = require("../constants/serverConstants")
-const verifyData = require("../utils/verifyData")
+const CategoryRepository = require("../repository/CategoryRepository")
+const CategoryConstants = require("../constants/CategoryConstants")
+const ServerConstants = require("../constants/ServerConstants")
+const { validationResult } = require("express-validator")
 
 class CategoryController{
-    async findAll(req, res){
+    async get_all(req, res){
         try{
-            let categories = await Category.findAll()
+            let categories = await CategoryRepository.find_all()
             res.json(categories)
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
-    async findById(req, res){
+    async get_by_id(req, res){
         try{
             let {id} = req.params
 
-            if(!verifyData.id(id)){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: CategoryConstants.INVALID_DATA})
             }
-            id = parseInt(id)
 
-            let category = await Category.findById(id)
+            let category = await CategoryRepository.find_by_id(id)
             if(category == undefined){
-                return res.status(404).json({msg: categoryConstants.notFound})
+                return res.status(404).json({msg: CategoryConstants.NOT_FOUND})
             }
 
             res.status(200).json(category)
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
-    async findBySlug(req, res){
+    async find_by_slug(req, res){
         try{
             let {slug} = req.params
 
-            if(!verifyData.slug(slug)){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: CategoryConstants.INVALID_DATA})
             }
 
-            let category = await Category.findBySlug(slug)
+            let category = await CategoryRepository.find_by_slug(slug)
             if(category == undefined){
-                return res.status(404).json({msg: categoryConstants.notFound})
+                return res.status(404).json({msg: CategoryConstants.NOT_FOUND})
             }
 
             res.status(200).json(category)
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -56,67 +57,68 @@ class CategoryController{
         try{
             const {name} = req.body;
 
-            if(!verifyData.name(name)){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: CategoryConstants.INVALID_DATA})
             }
 
-            let categoryExists = await Category.verifySlug(name)
+            let categoryExists = await CategoryRepository.verify_slug(name)
             if(categoryExists){
-                return res.status(406).json({msg: categoryConstants.alreadyExists})
+                return res.status(406).json({msg: CategoryConstants.ALREADY_EXISTS})
             }
 
-            await Category.create(name)
-            res.json({status: categoryConstants.createdSuccess})
+            await CategoryRepository.create(name)
+            res.json({status: CategoryConstants.CREATED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
     async update(req, res){
         try{
-            let id = req.params.id
-            let name = req.body.name
+            let {id} = req.params
+            let {name} = req.body
 
-            if(!verifyData.id(id) || !verifyData.name(name)){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: CategoryConstants.INVALID_DATA})
             }
-            id = parseInt(id)
 
-            let categoryExists = await Category.verifyId(id)
+            let categoryExists = await CategoryRepository.verify_id(id)
             if(!categoryExists){
-                return res.status(404).json({msg: categoryConstants.notFound})
+                return res.status(404).json({msg: CategoryConstants.NOT_FOUND})
             }
 
-            let nameExists = await Category.verifySlug(name)
+            let nameExists = await CategoryRepository.verify_slug(name)
             if(nameExists){
-                return res.status(406).json({msg: categoryConstants.alreadyExists})
+                return res.status(406).json({msg: CategoryConstants.ALREADY_EXISTS})
             }
 
-            await Category.update(id, name)
-            res.status(200).json({status: categoryConstants.updatedSuccess})
+            await CategoryRepository.update(id, name)
+            res.status(200).json({status: CategoryConstants.UPDATED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
     async delete(req, res){
         try{
-            let id = req.params.id
+            let {id} = req.params
         
-            if(!verifyData.id(id)){
-                return res.status(400).json({msg: serverConstants.invalidData})
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: CategoryConstants.INVALID_DATA})
             }
-            id = parseInt(id)
 
-            let categoryExists = await Category.verifyId(id)
+            let categoryExists = await CategoryRepository.verify_id(id)
             if(!categoryExists){
-                return res.status(404).json({msg: categoryConstants.notFound})
+                return res.status(404).json({msg: CategoryConstants.NOT_FOUND})
             }
 
-            await Category.delete(id)
-            res.status(200).json({status: categoryConstants.deletedSuccess})
+            await CategoryRepository.delete(id)
+            res.status(200).json({status: CategoryConstants.DELETED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: serverConstants.internalError})
+            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 }
