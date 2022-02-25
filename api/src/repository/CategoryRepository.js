@@ -1,4 +1,5 @@
 const { default: slugify } = require("slugify")
+const {v4: uuidv4} = require('uuid')
 const database = require("../database/config")
 
 class CategoryRepository{
@@ -60,10 +61,10 @@ class CategoryRepository{
         }
     }
 
-    async create(name){
+    async create(name, user_id){
         let slug = slugify(name).toLowerCase()
         try{
-            return await database.insert({name, slug, user_id: 1}).table("category")
+            return await database.insert({id: uuidv4(), name, slug, user_id}).table("category")
         }
         catch(error){
             console.log(error)

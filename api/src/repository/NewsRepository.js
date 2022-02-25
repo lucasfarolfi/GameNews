@@ -1,5 +1,6 @@
 const Slugify = require('slugify');
 const database = require('../database/config')
+const {v4: uuidv4} = require('uuid')
 
 class NewsRepository{
     async find_all(){
@@ -77,15 +78,18 @@ class NewsRepository{
         }
     }
 
-    async create(title, category_id, body){
+    async create(title, user_id, category_id, body){
         let slug = Slugify(title).toLowerCase()
 
         try{
             await database.insert(
-                {title, 
+            {
+                id: uuidv4(),
+                title, 
                 slug, 
-                user_id: 1, 
-                category_id: parseInt(category_id), 
+                is_active: true,
+                user_id, 
+                category_id, 
                 body
             })
             .table("news")
@@ -95,11 +99,11 @@ class NewsRepository{
         }
     }
 
-    async update(id, title, category_id, body){
+    async update(id, title, is_active, category_id, body){
         let slug = Slugify(title).toLowerCase()
 
         try{
-            await database.update({title, slug, category_id, body, updated_at: new Date()}).table("news").where({id})
+            await database.update({title, slug, body, category_id, is_active, updated_at: new Date()}).table("news").where({id})
         }catch(error){
             console.log(error)
         }

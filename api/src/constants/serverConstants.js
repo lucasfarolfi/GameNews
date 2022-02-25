@@ -1,3 +1,5 @@
 module.exports = {
-    INTERNAL_ERROR: "Erro interno."
+    INTERNAL_ERROR: "Erro interno",
+    NOT_AUTHETICATED: "Usuário não autenticado",
+    NOT_AUTHORIZED: "Usuário não permitido"
 }

@@ -2,6 +2,8 @@ const database = require("../database/config")
 const Slugify = require("slugify")
 const bcrypt = require("bcrypt")
 const salt =  parseInt(process.env.HASH_SALT)
+const {v4: uuidv4} = require('uuid')
+const ERole = require("../utils/ERole")
 
 class UserRepository{
     async find_all(){
@@ -55,7 +57,7 @@ class UserRepository{
         let hash_password = await bcrypt.hash(password, salt)
         try{
             return await database.insert({
-                name, slug, email, password: hash_password, role:0
+                id: uuidv4(), name, slug, email, password: hash_password, role: ERole.CLIENT
             }).table("user")
         }
         catch(error){
@@ -79,6 +81,7 @@ class UserRepository{
             try{
                 await database.where({id}).update({
                     name,
+                    slug,
                     email,
                     role,
                     updated_at: new Date()
@@ -94,6 +97,7 @@ class UserRepository{
             try{
                 await database.where({id}).update({
                     name,
+                    slug,
                     email,
                     password: hash,
                     role,

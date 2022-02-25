@@ -14,7 +14,8 @@
     "morgan": "^1.10.0",
     "mysql2": "^2.3.0",
     "pg": "^8.7.1",
-    "slugify": "^1.6.0"
+    "slugify": "^1.6.0",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "dev": "nodemon ./src/server.js",
