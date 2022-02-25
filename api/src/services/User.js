@@ -23,7 +23,7 @@ class User{
         }
     }
 
-    async verify_email(email){
+    async verifyEmail(email){
         try{
             let findEmail = await database.select().table("user").where({email})
 
@@ -59,7 +59,6 @@ class User{
         }
         catch(error){
             console.log(error)
-            throw error
         }
     }
 

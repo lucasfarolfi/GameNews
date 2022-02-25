@@ -2,9 +2,7 @@ const Router = require('express').Router()
 const NewsController = require('./controllers/NewsController')
 const CategoryController = require('./controllers/CategoryController')
 const UserController = require('./controllers/UserController')
-const LoginController = require("./controllers/LoginController")
 const AdminAuth = require("./middleware/AdminAuth")
-const Validations = require("./utils/RoutesValidations")
 
 //News
 Router.get("/noticias", NewsController.findAll)
@@ -23,12 +21,12 @@ Router.put("/categorias/:id", CategoryController.update)
 Router.delete("/categorias/:id", CategoryController.delete)
 
 //User
-Router.get("/usuarios", AdminAuth, UserController.find_all)
-Router.get("/usuarios/:id", AdminAuth, Validations.id, UserController.find_one)
-Router.post("/usuarios", Validations.create_user,UserController.create)
+Router.get("/usuarios", AdminAuth, UserController.findAll)
+Router.get("/usuarios/:id", AdminAuth, UserController.findUser)
+Router.post("/usuarios", UserController.create)
 Router.delete("/usuarios/:id", AdminAuth, UserController.delete)
 Router.patch("/usuarios", AdminAuth, UserController.updatePassword)
-Router.put("/usuarios/:id", Validations.update_user, UserController.update_user)
-Router.post("/login", Validations.login, LoginController.login)
+Router.put("/usuarios/:id", UserController.updateUser)
+Router.post("/login", UserController.login)
 
 module.exports = Router
