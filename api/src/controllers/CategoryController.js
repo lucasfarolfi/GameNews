@@ -13,10 +13,11 @@ class CategoryController{
                 return res.status(400).json({msg: CategoryConstants.INVALID_QUERY})
             }
 
+            let search = req.query.search || ''
             let page = req.query.page || 1
             let limit = req.query.limit || await CategoryRepository.count_all() 
 
-            let categories = await CategoryRepository.find_all(page, limit)
+            let categories = await CategoryRepository.find_all(page, limit, search)
             res.json({ page, limit, total: categories.length, result: categories})
         }catch(e){
             res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})

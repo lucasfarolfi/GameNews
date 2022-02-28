@@ -10,10 +10,11 @@ class UserController{
                 return res.status(400).json({msg: UserConstants.INVALID_QUERY})
             }
 
+            let search = req.query.search || ''
             let page = req.query.page || 1
             let limit = req.query.limit || await UserRepository.count_all() 
 
-            let users = await UserRepository.find_all(page, limit)
+            let users = await UserRepository.find_all(page, limit, search)
             return res.status(200).json({ page, limit, total: users.length, result: users})
         }catch(e){
             return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})

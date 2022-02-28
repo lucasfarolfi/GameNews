@@ -3,7 +3,7 @@ const database = require('../database/config')
 const {v4: uuidv4} = require('uuid')
 
 class NewsRepository{
-    async find_all(page, limit){
+    async find_all(page, limit, search){
         try{
             let news = await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
             .from("news").orderBy('id', 'desc')
@@ -11,6 +11,7 @@ class NewsRepository{
             .join('category', 'news.category_id', 'category.id')
             .limit(limit)
             .offset((page - 1) * limit)
+            .whereRaw(`LOWER(news.title) LIKE ?`, `%${search.toLowerCase()}%`)
             return news;
         }
         catch(e){
