@@ -9,6 +9,7 @@ module.exports = {
         param("slug").isString()
     ],
     pagination: [
+        query("search").optional().isString(),
         query("page").optional().isString().isNumeric().customSanitizer(p => parseInt(p)),
         query("limit").optional().isString().isNumeric().customSanitizer(l => parseInt(l))
     ],
