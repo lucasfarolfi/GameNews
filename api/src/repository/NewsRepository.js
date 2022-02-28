@@ -13,9 +13,9 @@ class NewsRepository{
             .offset((page - 1) * limit)
             return news;
         }
-        catch(error){
-            console.log(error)
-            throw error
+        catch(e){
+            console.log(e)
+            throw e
         }
     }
     
@@ -26,9 +26,9 @@ class NewsRepository{
             .join("user", "news.user_id", "user.id")
             .join("category", "news.category_id", "category.id")
             return news[0]
-        }catch(error){
-            console.log(error)
-            return undefined
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -39,9 +39,9 @@ class NewsRepository{
             .join("user", "news.user_id", "user.id")
             .join("category", "news.category_id", "category.id")
             return news[0]
-        }catch(error){
-            console.log(error)
-            return undefined
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -52,8 +52,9 @@ class NewsRepository{
             let news = await database.select().table("news").where({slug})
             if(news.length > 0) return true
             else return false
-        }catch(error){
-            console.log(error)
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -64,8 +65,9 @@ class NewsRepository{
             let news = await database.select().table("news").where({slug}).whereNot({id})
             if(news.length > 0) return true
             else return false
-        }catch(error){
-            console.log(error)
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -74,9 +76,9 @@ class NewsRepository{
             let news = await database.select().table("news").where({id})
             if(news.length > 0) return true
             else return false
-        }catch(error){
-            console.log(error)
-            return false
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -96,8 +98,9 @@ class NewsRepository{
             })
             .table("news")
 
-        }catch(error){
-            console.log(error)
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -106,16 +109,18 @@ class NewsRepository{
 
         try{
             await database.update({title, slug, body, category_id, is_active, updated_at: new Date()}).table("news").where({id})
-        }catch(error){
-            console.log(error)
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
     async delete_by_id(id){
         try{
             await database.delete().table("news").where({id})
-        } catch(error){
-            console.log(error)
+        } catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -125,6 +130,7 @@ class NewsRepository{
             return parseInt(count[0].count)
         }
         catch(e){
+            console.log(e)
             throw e
         }
     }

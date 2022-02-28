@@ -12,9 +12,9 @@ class UserRepository{
             .table("user").orderBy('id', 'desc')
             .limit(limit)
             .offset((page - 1) * limit)
-        }catch(error){
-            console.log(error)
-            throw error
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -23,8 +23,9 @@ class UserRepository{
             let user = await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
             .table("user").where({id})
             return user[0]
-        }catch(error){
-            console.log(error)
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -35,9 +36,9 @@ class UserRepository{
             if(findEmail.length > 0) return true
             else return false
         }
-        catch(error){
-            console.log(error)
-            return false
+        catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -48,9 +49,9 @@ class UserRepository{
             if(findUser.length > 0) return true
             else return false
         }
-        catch(error){
-            console.log(error)
-            return false
+        catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -62,8 +63,9 @@ class UserRepository{
                 id: uuidv4(), name, slug, email, password: hash_password, role: ERole.CLIENT
             }).table("user")
         }
-        catch(error){
-            console.log(error)
+        catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -71,8 +73,9 @@ class UserRepository{
         try{
             await database.delete().table("user").where({id})
         }
-        catch(error){
-            console.log(error)
+        catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -88,9 +91,9 @@ class UserRepository{
                     role,
                     updated_at: new Date()
                 }).table("user")
-            }catch(error){
-                console.log(error)
-                throw error
+            }catch(e){
+                console.log(e)
+            throw e
             }
         }
         else{
@@ -105,9 +108,9 @@ class UserRepository{
                     role,
                     updated_at: new Date()
                 }).table("user")
-            }catch(error){
-                console.log(error)
-                throw error
+            }catch(e){
+                console.log(e)
+            throw e
             }
         }
         
@@ -119,6 +122,7 @@ class UserRepository{
             return parseInt(count[0].count)
         }
         catch(e){
+            console.log(e)
             throw e
         }
     }

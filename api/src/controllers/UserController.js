@@ -14,10 +14,9 @@ class UserController{
             let limit = req.query.limit || await UserRepository.count_all() 
 
             let users = await UserRepository.find_all(page, limit)
-            res.status(200).json({ page, limit, total: users.length, result: users})
+            return res.status(200).json({ page, limit, total: users.length, result: users})
         }catch(e){
-            console.log(e)
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -25,8 +24,7 @@ class UserController{
         try{
             let {id} = req.params
             
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: UserConstants.INVALID_DATA})
             }
 
@@ -35,10 +33,9 @@ class UserController{
                 return res.status(404).json({msg: UserConstants.NOT_FOUND})
             }
 
-            res.status(200).json(user)
+            return res.status(200).json(user)
         }catch(e){
-            console.log(e)
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -46,8 +43,7 @@ class UserController{
         try{
             let {name, email,password} = req.body
 
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: UserConstants.INVALID_DATA})
             }
 
@@ -58,9 +54,9 @@ class UserController{
             }
 
             await UserRepository.create(name,email,password)
-            res.status(200).json({status: UserConstants.CREATED_SUCCESS})
+            return res.status(200).json({status: UserConstants.CREATED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -69,8 +65,7 @@ class UserController{
             let {id} = req.params
             let {name, email, password, role} = req.body
 
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: UserConstants.INVALID_DATA})
             }
 
@@ -80,9 +75,9 @@ class UserController{
             }
 
             await UserRepository.update(id, name, email, password, role)
-            res.status(200).json({status: UserConstants.UPDATED_SUCCESS})
+            return es.status(200).json({status: UserConstants.UPDATED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -90,8 +85,7 @@ class UserController{
         try{
             let {id} = req.params
 
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: UserConstants.INVALID_DATA})
             }
 
@@ -101,9 +95,9 @@ class UserController{
             }
 
             await UserRepository.delete(id)
-            res.status(200).json({status: UserConstants.DELETED_SUCCESS})
+            return res.status(200).json({status: UserConstants.DELETED_SUCCESS})
         }catch(e){
-              res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 }

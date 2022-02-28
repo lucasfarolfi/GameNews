@@ -27,8 +27,7 @@ class CategoryController{
         try{
             let {id} = req.params
 
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: CategoryConstants.INVALID_DATA})
             }
 
@@ -37,9 +36,9 @@ class CategoryController{
                 return res.status(404).json({msg: CategoryConstants.NOT_FOUND})
             }
 
-            res.status(200).json(category)
+            return res.status(200).json(category)
         }catch(e){
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -47,8 +46,7 @@ class CategoryController{
         try{
             let {slug} = req.params
 
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: CategoryConstants.INVALID_DATA})
             }
 
@@ -57,9 +55,9 @@ class CategoryController{
                 return res.status(404).json({msg: CategoryConstants.NOT_FOUND})
             }
 
-            res.status(200).json(category)
+            return res.status(200).json(category)
         }catch(e){
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -67,8 +65,7 @@ class CategoryController{
         try{
             const {name} = req.body;
 
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: CategoryConstants.INVALID_DATA})
             }
             
@@ -84,9 +81,9 @@ class CategoryController{
             }
             
             await CategoryRepository.create(name, user_id)
-            res.json({status: CategoryConstants.CREATED_SUCCESS})
+            return res.json({status: CategoryConstants.CREATED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -95,8 +92,7 @@ class CategoryController{
             let {id} = req.params
             let {name} = req.body
 
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: CategoryConstants.INVALID_DATA})
             }
 
@@ -116,9 +112,9 @@ class CategoryController{
             }
 
             await CategoryRepository.update(id, name)
-            res.status(200).json({status: CategoryConstants.UPDATED_SUCCESS})
+            return res.status(200).json({status: CategoryConstants.UPDATED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -126,8 +122,7 @@ class CategoryController{
         try{
             let {id} = req.params
         
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: CategoryConstants.INVALID_DATA})
             }
 
@@ -147,9 +142,9 @@ class CategoryController{
             }
 
             await CategoryRepository.delete(id)
-            res.status(200).json({status: CategoryConstants.DELETED_SUCCESS})
+            return res.status(200).json({status: CategoryConstants.DELETED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 }

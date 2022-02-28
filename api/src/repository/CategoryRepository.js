@@ -11,8 +11,9 @@ class CategoryRepository{
             .limit(limit)
             .offset((page - 1) * limit)
         }
-        catch(error){
+        catch(e){
             console.log(error)
+            throw e
         }
     }
 
@@ -22,9 +23,9 @@ class CategoryRepository{
             .from("category").where('category.id', id)
             .join('user', 'category.user_id', 'user.id')
             return category[0]
-        }catch(error){
-            console.log(error)
-            return undefined
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -34,9 +35,9 @@ class CategoryRepository{
             .from("category").where('category.slug', slug)
             .join('user', 'category.user_id', 'user.id')
             return category[0]
-        }catch(error){
-            console.log(error)
-            return undefined
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -46,9 +47,9 @@ class CategoryRepository{
             let findCategory = await database.select().table("category").where({slug})
             if(findCategory.length > 0) return true
             else return false
-        }catch(error){
-            console.log(error)
-            return false
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -57,9 +58,9 @@ class CategoryRepository{
             let findCategory = await database.select().table("category").where({id})
             if(findCategory.length > 0) return true
             else return false
-        }catch(error){
-            console.log(error)
-            return false
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -68,8 +69,9 @@ class CategoryRepository{
         try{
             return await database.insert({id: uuidv4(), name, slug, user_id}).table("category")
         }
-        catch(error){
-            console.log(error)
+        catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -78,16 +80,18 @@ class CategoryRepository{
         try{
             return await database.update({name, slug}).table("category").where({id})
         }
-        catch(error){
-            console.log(error)
+        catch(e){
+            console.log(e)
+            throw e
         }
     }
 
     async delete(id){
         try{
             await database.delete().table("category").where({id})
-        }catch(error){
-            console.log(error)
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 
@@ -97,6 +101,7 @@ class CategoryRepository{
             return parseInt(count[0].count)
         }
         catch(e){
+            console.log(e)
             throw e
         }
     }

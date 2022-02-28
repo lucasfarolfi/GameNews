@@ -24,9 +24,9 @@ class LoginRepository{
                 email: user.email,
                 role: user.role
             }
-        }catch(error){
-            console.log(error)
-            throw error
+        }catch(e){
+            console.log(e)
+            throw e
         }
     }
 }

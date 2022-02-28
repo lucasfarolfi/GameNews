@@ -9,8 +9,7 @@ const ERole = require("../utils/ERole")
 class NewsController{
     async get_all(req, res){
         try{
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: NewsConstants.INVALID_QUERY})
             }
 
@@ -28,8 +27,7 @@ class NewsController{
         try{
             let {id} = req.params
             
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: NewsConstants.INVALID_DATA})
             }
             
@@ -38,9 +36,9 @@ class NewsController{
                 return res.status(404).json({msg: NewsConstants.NOT_FOUND})
             }
 
-            res.status(200).json(news)
+            return res.status(200).json(news)
         }catch(e){
-             res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
     
@@ -48,8 +46,7 @@ class NewsController{
         try{
             let {slug} = req.params
         
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: NewsConstants.INVALID_DATA})
             }
 
@@ -58,9 +55,9 @@ class NewsController{
                 return res.status(404).json({msg: NewsConstants.NOT_FOUND})
             }
 
-            res.status(200).json(newsExists)
+            return res.status(200).json(newsExists)
         }catch(e){
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -68,8 +65,7 @@ class NewsController{
         try{
             let {title, category_id, body} = req.body
 
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: NewsConstants.INVALID_DATA})
             }
             
@@ -85,9 +81,9 @@ class NewsController{
             }
 
             await NewsRepository.create(title, user_id, category_id, body)
-            res.json({status: NewsConstants.CREATED_SUCCESS})
+            return res.json({status: NewsConstants.CREATED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -95,8 +91,7 @@ class NewsController{
         try{
             let {id} = req.params
             
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: NewsConstants.INVALID_DATA})
             }
             
@@ -111,9 +106,9 @@ class NewsController{
             }
 
             await NewsRepository.delete_by_id(id)
-            res.status(200).json({status: NewsConstants.DELETED_SUCCESS})
+            return res.status(200).json({status: NewsConstants.DELETED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 
@@ -122,8 +117,7 @@ class NewsController{
             let {id} = req.params
             let {title, is_active, category_id, body} = req.body
 
-            const validation_errors = validationResult(req)
-            if(!validation_errors.isEmpty()){
+            if(!validationResult(req).isEmpty()){
                 return res.status(400).json({msg: NewsConstants.INVALID_DATA})
             }
             
@@ -143,9 +137,9 @@ class NewsController{
             }
 
             await NewsRepository.update(id, title, is_active, category_id, body)
-            res.json({status: NewsConstants.UPDATED_SUCCESS})
+            return res.json({status: NewsConstants.UPDATED_SUCCESS})
         }catch(e){
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
 }
