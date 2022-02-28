@@ -4,5 +4,6 @@ module.exports = {
     EMAIL_ALREADY_EXISTS: "E-mail já cadastrado",
     CREATED_SUCCESS: "Usuário foi criado com sucesso",
     UPDATED_SUCCESS: "Usuário foi atualizado com sucesso",
-    DELETED_SUCCESS: "Usuário foi deletado com sucesso"
+    DELETED_SUCCESS: "Usuário foi deletado com sucesso",
+    INVALID_QUERY: "Parâmetros de paginação inválidos"
 }

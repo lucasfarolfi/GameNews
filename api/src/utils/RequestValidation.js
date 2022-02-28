@@ -1,4 +1,4 @@
-const { body, param } = require("express-validator");
+const { body, param, query } = require("express-validator");
 
 module.exports = {
     // General routes
@@ -7,6 +7,10 @@ module.exports = {
     ],
     slug: [
         param("slug").isString()
+    ],
+    pagination: [
+        query("page").optional().isString().isNumeric().customSanitizer(p => parseInt(p)),
+        query("limit").optional().isString().isNumeric().customSanitizer(l => parseInt(l))
     ],
 
     // Login routes

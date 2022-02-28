@@ -3,12 +3,14 @@ const database = require('../database/config')
 const {v4: uuidv4} = require('uuid')
 
 class NewsRepository{
-    async find_all(){
+    async find_all(page, limit){
         try{
             let news = await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
             .from("news").orderBy('id', 'desc')
             .join('user', 'news.user_id', 'user.id')
             .join('category', 'news.category_id', 'category.id')
+            .limit(limit)
+            .offset((page - 1) * limit)
             return news;
         }
         catch(error){
@@ -114,6 +116,16 @@ class NewsRepository{
             await database.delete().table("news").where({id})
         } catch(error){
             console.log(error)
+        }
+    }
+
+    async count_all(){
+        try{
+            let count =  await database.count().table("news")
+            return parseInt(count[0].count)
+        }
+        catch(e){
+            throw e
         }
     }
 }

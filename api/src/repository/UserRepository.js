@@ -6,10 +6,12 @@ const {v4: uuidv4} = require('uuid')
 const ERole = require("../utils/ERole")
 
 class UserRepository{
-    async find_all(){
+    async find_all(page, limit){
         try{
             return await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
             .table("user").orderBy('id', 'desc')
+            .limit(limit)
+            .offset((page - 1) * limit)
         }catch(error){
             console.log(error)
             throw error
@@ -109,6 +111,16 @@ class UserRepository{
             }
         }
         
+    }
+
+    async count_all(){
+        try{
+            let count =  await database.count().table("user")
+            return parseInt(count[0].count)
+        }
+        catch(e){
+            throw e
+        }
     }
 }
 module.exports = new UserRepository()

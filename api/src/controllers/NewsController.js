@@ -9,10 +9,18 @@ const ERole = require("../utils/ERole")
 class NewsController{
     async get_all(req, res){
         try{
-            let news = await NewsRepository.find_all()
-            res.json(news)
+            const validation_errors = validationResult(req)
+            if(!validation_errors.isEmpty()){
+                return res.status(400).json({msg: NewsConstants.INVALID_QUERY})
+            }
+
+            let page = req.query.page || 1
+            let limit = req.query.limit || await NewsRepository.count_all() 
+
+            let news = await NewsRepository.find_all(page, limit)
+            return res.status(200).json({ page, limit, total: news.length, result: news})
         }catch(e){
-            res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
+            return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
     

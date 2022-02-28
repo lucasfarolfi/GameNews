@@ -4,5 +4,6 @@ module.exports = {
     ALREADY_EXISTS: "Esta notícia já existe",
     CREATED_SUCCESS: "Notícia criada com sucesso",
     DELETED_SUCCESS: "Notícia deletada com sucesso",
-    UPDATED_SUCCESS: "Notícia atualizada com sucesso"
+    UPDATED_SUCCESS: "Notícia atualizada com sucesso",
+    INVALID_QUERY: "Parâmetros de paginação inválidos"
 }

@@ -9,8 +9,15 @@ const ERole = require("../utils/ERole")
 class CategoryController{
     async get_all(req, res){
         try{
-            let categories = await CategoryRepository.find_all()
-            res.json(categories)
+            if(!validationResult(req).isEmpty()){
+                return res.status(400).json({msg: CategoryConstants.INVALID_QUERY})
+            }
+
+            let page = req.query.page || 1
+            let limit = req.query.limit || await CategoryRepository.count_all() 
+
+            let categories = await CategoryRepository.find_all(page, limit)
+            res.json({ page, limit, total: categories.length, result: categories})
         }catch(e){
             res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }

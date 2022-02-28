@@ -6,8 +6,15 @@ const { validationResult } = require("express-validator")
 class UserController{
     async get_all(req, res){
         try{
-            let users = await UserRepository.find_all()
-            res.status(200).json(users)
+            if(!validationResult(req).isEmpty()){
+                return res.status(400).json({msg: UserConstants.INVALID_QUERY})
+            }
+
+            let page = req.query.page || 1
+            let limit = req.query.limit || await UserRepository.count_all() 
+
+            let users = await UserRepository.find_all(page, limit)
+            res.status(200).json({ page, limit, total: users.length, result: users})
         }catch(e){
             console.log(e)
             res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
