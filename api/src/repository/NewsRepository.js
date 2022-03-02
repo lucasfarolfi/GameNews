@@ -6,7 +6,7 @@ class NewsRepository{
     async find_all(page, limit, search){
         try{
             let news = await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
-            .from("news").orderBy('id', 'desc')
+            .from("news").orderBy('created_at', 'desc')
             .join('user', 'news.user_id', 'user.id')
             .join('category', 'news.category_id', 'category.id')
             .limit(limit)

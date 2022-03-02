@@ -6,7 +6,7 @@ class CategoryRepository{
     async find_all(page, limit, search){
         try{
             return await database.select(['category.*', 'user.name as user_name'])
-            .table("category").orderBy('id', 'desc')
+            .table("category").orderBy('created_at', 'desc')
             .join('user', 'category.user_id', 'user.id')
             .limit(limit)
             .offset((page - 1) * limit)

@@ -9,7 +9,7 @@ class UserRepository{
     async find_all(page, limit, search){
         try{
             return await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
-            .table("user").orderBy('id', 'desc')
+            .table("user").orderBy('created_at', 'desc')
             .limit(limit)
             .offset((page - 1) * limit)
             .whereRaw(`LOWER(name) LIKE ?`, `%${search.toLowerCase()}%`)
