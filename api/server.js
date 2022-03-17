@@ -11,6 +11,7 @@ dotenv.config()
 app.use(morgan('dev'))
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
+app.use('/files', express.static('uploads'));
 
 //Routes
 app.use("/", require('./src/routes'))

@@ -13,11 +13,12 @@ class NewsController{
                 return res.status(400).json({msg: NewsConstants.INVALID_QUERY})
             }
 
+            let active = req.query.active || ''
             let search = req.query.search || ''
             let page = req.query.page || 1
             let limit = req.query.limit || await NewsRepository.count_all() 
 
-            let news = await NewsRepository.find_all(page, limit, search)
+            let news = await NewsRepository.find_all(page, limit, search, active)
             return res.status(200).json({ page, limit, total: news.length, result: news})
         }catch(e){
             return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
