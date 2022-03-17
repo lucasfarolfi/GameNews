@@ -4,6 +4,7 @@ exports.up = (knex) => {
         table.uuid('id').primary().notNullable()
         table.string('title').notNullable()
         table.string('slug').notNullable()
+        table.string('image').notNullable()
         table.boolean('is_active').notNullable()
         table.text('body').notNullable()
         table.uuid('user_id').notNullable().unsigned().references('id').inTable('user').onDelete('CASCADE').index()

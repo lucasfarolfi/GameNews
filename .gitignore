@@ -102,3 +102,12 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Upload
+api/uploads/*
+
+!api/uploads/default.jpg
+!api/uploads/fallen.jpg
+!api/uploads/fortnite.jpg
+!api/uploads/god-of-war.jpg
+!api/uploads/ps5.jpg

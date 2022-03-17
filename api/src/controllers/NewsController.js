@@ -5,6 +5,7 @@ const { validationResult } = require("express-validator")
 const decoded_user = require("../utils/verifyUserAuthenticated")
 const UserRepository = require("../repository/UserRepository")
 const ERole = require("../utils/ERole")
+const DeleteFile = require("../utils/DeleteFile")
 
 class NewsController{
     async get_all(req, res){
@@ -66,25 +67,30 @@ class NewsController{
     async create(req, res){
         try{
             let {title, category_id, body} = req.body
-
+            let filename = req.file?.filename || undefined
+            
             if(!validationResult(req).isEmpty()){
+                if(filename) DeleteFile(filename)
                 return res.status(400).json({msg: NewsConstants.INVALID_DATA})
             }
             
-            const user_id = decoded_user(req.headers['authorization']).id;
+            const user_id = decoded_user(req.headers['authorization']).id; 
             const verify_user = await UserRepository.verify_id(user_id);
             if(!verify_user){
+                if(filename) DeleteFile(filename)
                 return res.status(403).json({msg: ServerConstants.NOT_AUTHORIZED})
             }
 
             let newsExists = await NewsRepository.verify_title(title)
             if(newsExists){
+                if(filename) DeleteFile(filename)
                 return res.status(406).json({msg: NewsConstants.ALREADY_EXISTS})
             }
 
-            await NewsRepository.create(title, user_id, category_id, body)
+            await NewsRepository.create(title, user_id, category_id, body, filename)
             return res.json({status: NewsConstants.CREATED_SUCCESS})
         }catch(e){
+            if(filename) DeleteFile(filename)
             return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }
@@ -118,29 +124,35 @@ class NewsController{
         try{
             let {id} = req.params
             let {title, is_active, category_id, body} = req.body
+            let filename = req.file?.filename || undefined
 
             if(!validationResult(req).isEmpty()){
+                if(filename) DeleteFile(filename)
                 return res.status(400).json({msg: NewsConstants.INVALID_DATA})
             }
             
             let verifyId = await NewsRepository.find_by_id(id)
             if(!verifyId){
+                if(filename) DeleteFile(filename)
                 return res.status(404).json({msg: NewsConstants.NOT_FOUND})
             }
             
             const user = decoded_user(req.headers['authorization']);
             if(user.role != ERole.ADMIN && verifyId.user_id !== user.id){
+                if(filename) DeleteFile(filename)
                 return res.status(403).json({msg: ServerConstants.NOT_AUTHORIZED})
             }
             
             let newsExists = await NewsRepository.verify_title_by_id(id, title)
             if(newsExists){
+                if(filename) DeleteFile(filename)
                 return res.status(406).json({msg: NewsConstants.ALREADY_EXISTS})
             }
 
-            await NewsRepository.update(id, title, is_active, category_id, body)
+            await NewsRepository.update(id, title, is_active, category_id, body, filename)
             return res.json({status: NewsConstants.UPDATED_SUCCESS})
         }catch(e){
+            if(filename) DeleteFile(filename)
             return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }
     }

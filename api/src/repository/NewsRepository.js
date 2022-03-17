@@ -84,7 +84,7 @@ class NewsRepository{
         }
     }
 
-    async create(title, user_id, category_id, body){
+    async create(title, user_id, category_id, body, filename){
         let slug = Slugify(title).toLowerCase()
 
         try{
@@ -93,6 +93,7 @@ class NewsRepository{
                 id: uuidv4(),
                 title, 
                 slug, 
+                image: filename ? `${process.env.BASE_URL}/files/${filename}` : `${process.env.BASE_URL}/files/default.jpg`,
                 is_active: true,
                 user_id, 
                 category_id, 
@@ -106,11 +107,21 @@ class NewsRepository{
         }
     }
 
-    async update(id, title, is_active, category_id, body){
+    async update(id, title, is_active, category_id, body, filename){
         let slug = Slugify(title).toLowerCase()
 
         try{
-            await database.update({title, slug, body, category_id, is_active, updated_at: new Date()}).table("news").where({id})
+            if(filename){
+                await database.update(
+                    {
+                        title, slug, body, category_id, 
+                        image: `${process.env.BASE_URL}/files/${filename}`,
+                        is_active, updated_at: new Date()
+                    }
+                ).table("news").where({id})
+            } else {
+                await database.update({title, slug, body, category_id, is_active, updated_at: new Date()}).table("news").where({id})
+            }
         }catch(e){
             console.log(e)
             throw e

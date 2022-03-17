@@ -12,9 +12,9 @@ const ERole = require("./utils/ERole")
 Router.get("/noticias", Validation.pagination, NewsController.get_all)
 Router.get("/noticias/id/:id", Validation.id, NewsController.get_by_id)
 Router.get("/noticias/slug/:slug", Validation.slug, NewsController.find_by_slug)
-Router.post("/noticias", Authorization([ERole.ADMIN, ERole.JOURNALIST]),Validation.create_news, Upload.single('file'), NewsController.create)
+Router.post("/noticias", Authorization([ERole.ADMIN, ERole.JOURNALIST]), Upload.single('file'), Validation.create_news, NewsController.create)
 Router.delete("/noticias/:id", Authorization([ERole.ADMIN, ERole.JOURNALIST]), Validation.id, NewsController.delete)
-Router.put("/noticias/:id", Authorization([ERole.ADMIN, ERole.JOURNALIST]), Validation.update_news, Upload.single('file'), NewsController.update)
+Router.put("/noticias/:id", Authorization([ERole.ADMIN, ERole.JOURNALIST]), Upload.single('file'), Validation.update_news, NewsController.update)
 
 //Category
 Router.get("/categorias", Validation.pagination, CategoryController.get_all)
