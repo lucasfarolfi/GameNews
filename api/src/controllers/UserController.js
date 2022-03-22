@@ -14,8 +14,21 @@ class UserController{
             let page = req.query.page || 1
             let limit = req.query.limit || await UserRepository.count_all() 
 
-            let users = await UserRepository.find_all(page, limit, search)
-            return res.status(200).json({ page, limit, total: users.length, result: users})
+            let users = await UserRepository.find_all(search)
+            
+            const offset = ( page * limit ) - limit
+            const maxoffset = ( offset + limit )
+            const total_pages = Math.ceil( users.length / limit )
+            const result = req.query.limit ? users.slice(offset, maxoffset) : users
+
+            return res.status(200).json({ 
+                page, 
+                limit, 
+                total: users.length, 
+                total_pages,
+                total_current_page: result.length,
+                result
+            })
         }catch(e){
             return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }

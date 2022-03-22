@@ -1,0 +1,35 @@
+.HighlightedBox{
+    color: var(--white);
+    background-color: var(--dark-red);
+    cursor: pointer;
+    
+    img{
+        width: 100%;
+        height: auto;
+    }
+    .newsInfo{
+        padding: 16px 8px;
+        h3{
+            font-size: calc(0.7rem + 0.4vw);
+            font-weight: bold;
+        }
+        
+    }
+}
+
+@media(min-width:768px){
+    .HighlightedBox{
+        min-height: 240px;
+    }
+}
+
+@media(min-width:996px){
+    .HighlightedBox{
+        min-height: 300px;
+        transition: all .2s;
+    
+        &:hover{
+            transform: scale(1.05);
+        }
+    }
+}

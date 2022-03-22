@@ -3,14 +3,12 @@ const database = require('../database/config')
 const {v4: uuidv4} = require('uuid')
 
 class NewsRepository{
-    async find_all(page, limit, search, active){
+    async find_all(search, active){
         try{
             let news = await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
             .from("news").orderBy('created_at', 'desc')
             .join('user', 'news.user_id', 'user.id')
             .join('category', 'news.category_id', 'category.id')
-            .limit(limit)
-            .offset((page - 1) * limit)
             .where(builder => active && builder.where('news.is_active', active))
             .andWhereRaw(`LOWER(news.title) LIKE ?`, `%${search.toLowerCase()}%`)
             return news;

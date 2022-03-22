@@ -17,8 +17,21 @@ class CategoryController{
             let page = req.query.page || 1
             let limit = req.query.limit || await CategoryRepository.count_all() 
 
-            let categories = await CategoryRepository.find_all(page, limit, search)
-            res.json({ page, limit, total: categories.length, result: categories})
+            let categories = await CategoryRepository.find_all(search)
+
+            const offset = ( page * limit ) - limit
+            const maxoffset = ( offset + limit )
+            const total_pages = Math.ceil( categories.length / limit )
+            const result = req.query.limit ? categories.slice(offset, maxoffset) : categories
+
+            return res.status(200).json({ 
+                page, 
+                limit, 
+                total: categories.length, 
+                total_pages,
+                total_current_page: result.length,
+                result
+            })
         }catch(e){
             res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})
         }

@@ -1,0 +1,39 @@
+.container{
+    max-width: 1100px;
+}
+.main{
+    min-height: 80vh;
+
+    .banner{
+        width: 100%;
+
+        img{
+            width: 100%;
+            height: auto;
+        }
+    }
+    .newsContainer{
+        max-width: 800px;
+
+        .newsHeader{
+            border-bottom: 2px solid var(--grey);
+            margin: 20px 0 10px 0;
+            padding-bottom: 10px;
+            h1{
+                font-size: calc(1rem + 0.6vw);
+                text-align: justify;
+                font-weight: bold;
+            }
+            small{
+                font-size: calc(0.7rem + 0.4vw);
+            }
+        }
+        
+        .newsBody{
+            margin-bottom: 20px;
+            font-size: calc(0.7rem + 0.4vw);
+            
+        }
+    }
+    
+}

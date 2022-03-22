@@ -6,12 +6,10 @@ const {v4: uuidv4} = require('uuid')
 const ERole = require("../utils/ERole")
 
 class UserRepository{
-    async find_all(page, limit, search){
+    async find_all(search){
         try{
             return await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
             .table("user").orderBy('created_at', 'desc')
-            .limit(limit)
-            .offset((page - 1) * limit)
             .whereRaw(`LOWER(name) LIKE ?`, `%${search.toLowerCase()}%`)
         }catch(e){
             console.log(e)
