@@ -17,22 +17,16 @@ class NewsController{
             let active = req.query.active || ''
             let search = req.query.search || ''
             let page = req.query.page || 1
-            let limit = req.query.limit || await NewsRepository.count_all() 
+            let limit = req.query.limit || undefined 
 
-            let news = await NewsRepository.find_all(search, active)
+            let query = await NewsRepository.find_and_count_by_query(page, limit, search, active)
 
-            const offset = ( page * limit ) - limit
-            const maxoffset = ( offset + limit )
-            const total_pages = Math.ceil( news.length / limit )
-            const result = req.query.limit ? news.slice(offset, maxoffset) : news
+            limit = !limit ? query.count : limit
 
-            return res.status(200).json({ 
-                page, 
-                limit, 
-                total: news.length, 
-                total_pages,
-                total_current_page: result.length,
-                result
+            return res.status(200).json({ page, limit, total: query.count, 
+                total_pages: Math.ceil(query.count / limit), 
+                total_current_page: query.result.length,
+                result: query.result
             })
         }catch(e){
             return res.status(500).json({msg: ServerConstants.INTERNAL_ERROR})

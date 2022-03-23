@@ -3,12 +3,23 @@ const {v4: uuidv4} = require('uuid')
 const database = require("../database/config")
 
 class CategoryRepository{
-    async find_all(search){
+    async find_and_count_by_query(page, limit_param, search){
         try{
-            return await database.select(['category.*', 'user.name as user_name'])
-            .table("category").orderBy('created_at', 'desc')
-            .join('user', 'category.user_id', 'user.id')
+            let count = await database.count().table("category")
+                .join('user', 'category.user_id', 'user.id')
             .whereRaw(`LOWER(category.name) LIKE ?`, `%${search.toLowerCase()}%`)
+
+            count = parseInt(count[0].count)
+
+            let limit = limit_param ? limit_param : count
+
+            let categories = await database.select(['category.*', 'user.name as user_name'])
+                .table("category").orderBy('created_at', 'desc')
+                .join('user', 'category.user_id', 'user.id')
+                .limit(limit).offset((page - 1) * limit)
+            .whereRaw(`LOWER(category.name) LIKE ?`, `%${search.toLowerCase()}%`)
+        
+            return {result: categories, count};
         }
         catch(e){
             console.log(error)

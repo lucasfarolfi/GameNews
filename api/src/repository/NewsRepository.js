@@ -3,15 +3,27 @@ const database = require('../database/config')
 const {v4: uuidv4} = require('uuid')
 
 class NewsRepository{
-    async find_all(search, active){
+    async find_and_count_by_query(page, limit_param, search, active){
         try{
-            let news = await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
-            .from("news").orderBy('created_at', 'desc')
-            .join('user', 'news.user_id', 'user.id')
-            .join('category', 'news.category_id', 'category.id')
-            .where(builder => active && builder.where('news.is_active', active))
+            let count = await database.count().table("news")
+                .join('user', 'news.user_id', 'user.id')
+                .join('category', 'news.category_id', 'category.id')
+                .where(builder => active && builder.where('news.is_active', active))
             .andWhereRaw(`LOWER(news.title) LIKE ?`, `%${search.toLowerCase()}%`)
-            return news;
+
+            count = parseInt(count[0].count)
+
+            let limit = limit_param ? limit_param : count
+
+            let news = await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
+                .from("news").orderBy('created_at', 'desc')
+                .join('user', 'news.user_id', 'user.id')
+                .join('category', 'news.category_id', 'category.id')
+                .limit(limit).offset((page - 1) * limit)
+                .where(builder => active && builder.where('news.is_active', active))
+            .andWhereRaw(`LOWER(news.title) LIKE ?`, `%${search.toLowerCase()}%`)
+            
+            return {result: news, count};
         }
         catch(e){
             console.log(e)

@@ -6,11 +6,21 @@ const {v4: uuidv4} = require('uuid')
 const ERole = require("../utils/ERole")
 
 class UserRepository{
-    async find_all(search){
+    async find_and_count_by_query(page, limit_param, search){
         try{
-            return await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
-            .table("user").orderBy('created_at', 'desc')
+            let count = await database.count().table("user")
             .whereRaw(`LOWER(name) LIKE ?`, `%${search.toLowerCase()}%`)
+
+            count = parseInt(count[0].count)
+
+            let limit = limit_param ? limit_param : count
+
+            let users = await database.select(['user.id','user.name','user.email','user.role','user.created_at'])
+                .table("user").orderBy('created_at', 'desc')
+                .limit(limit).offset((page - 1) * limit)
+            .whereRaw(`LOWER(name) LIKE ?`, `%${search.toLowerCase()}%`)
+        
+            return {result: users, count};
         }catch(e){
             console.log(e)
             throw e
