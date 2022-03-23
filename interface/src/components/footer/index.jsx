@@ -1,2 +1,16 @@
-export * from './footer'
-export {default} from './footer'
+import { Container, Button} from "react-bootstrap";
+import Link from 'next/link'
+import styles from './footer.module.scss'
+
+export default function Footer(){
+    return(
+
+        <footer className={styles.footer}>
+            <Container className={styles.container}>
+            <h1>Rodapé</h1>
+                    
+            </Container>
+        </footer>
+
+    )
+}

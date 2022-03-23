@@ -9,7 +9,8 @@
   > img{
     border-radius: 10px;
     width: 100%;
-    height: auto; //Deve ser auto
+    height: auto; 
+    max-height: 230px;
   }
   .newsInfo{
     width: 80%;
@@ -29,16 +30,24 @@
   }
 }
 
+@media(min-width: 430px){
+  .newsBox{
+    > img{
+      max-height: 500px;
+    }
+  }
+}
+
 @media(min-width: 768px){
     .newsBox{
         max-width: 900px;
         flex-direction: row;
         
         > img{
-          max-width: 200px;
-          width: 180px;
-          height: auto;
-          margin-right: 10px;
+          width: 200px;
+          height: 130px;
+          object-fit: cover;
+          margin-right: 20px;
         }
         .newsInfo{
           margin-top: 0;
