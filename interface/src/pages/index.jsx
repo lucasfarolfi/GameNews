@@ -9,8 +9,8 @@ import Pagination from '../components/pagination';
 
 export async function getServerSideProps(context) {
     try{
-        const highlightedNews = await getNews("true", "1", "4")
-        const lastNews = await getNews("true", "1", "10")
+        const highlightedNews = await getNews("true", 1, 4)
+        const lastNews = await getNews("true", 1, 10)
         
         return {
             props: {highlightedNews, lastNews, currentPage: 1}

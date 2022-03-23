@@ -6,7 +6,7 @@ import { getCategories } from '../../services/categories';
 
 export async function getServerSideProps(context) {
     try{
-        const categories = await getCategories("1", "4")
+        const categories = await getCategories(1, 15)
         
         return {
             props: {categories}
@@ -23,29 +23,28 @@ export default function Home({categories, error}){
     return(
         <>
             <Header/>
-            
-            {!error &&
-                <main className={styles.main}>
-                <Container className={styles.container}>
-                    <h2>Categorias</h2>
-                    <section>
-                        {!error && categories?.result?.map((cat, index)=>{
-                            return(
-                                <h1 key={cat.id}>Olá mundo</h1>
-                            )
-                        })}
-                    </section>
-                </Container>
-                </main>
-            }
-                
-            {error &&
-                <main className={styles.main}>
-                    <h1 className='mt-4'>Erro:</h1>
-                    <p>{error}</p> 
-                </main>
-            }
-            
+            <Container className={styles.container}>
+                {!error &&
+                    <main className={styles.main}>
+                    
+                        <h2>Categorias</h2>
+                        <section>
+                            {!error && categories?.result?.map((cat, index)=>{
+                                return(
+                                    <h1 key={cat.id}>Olá mundo</h1>
+                                )
+                            })}
+                        </section>
+                    </main>
+                }
+                    
+                {error &&
+                    <main className={styles.main}>
+                        <h1 className='mt-4'>Erro:</h1>
+                        <p>{error}</p> 
+                    </main>
+                }
+            </Container>
             <Footer/>
         </>
     )
