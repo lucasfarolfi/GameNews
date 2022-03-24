@@ -1,3 +1,4 @@
+
 import styles from './searchBarNav.module.scss'
 import SearchIcon from './searchIcon'
 import { useState } from 'react'
@@ -17,7 +18,7 @@ export default function SearchBarNav(){
             return
         }
         else{
-            window.location.href = 'http://localhost:3000'
+            window.location.href = 'http://localhost:3000/pesquisa/'+search.toLowerCase().replace(/[^\w-]+/g,'')
         }
         
     }

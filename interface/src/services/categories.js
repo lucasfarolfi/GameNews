@@ -27,6 +27,17 @@ export const getCategoryById = (id)=>{
     })
 }
 
+export const getCategoryBySlug = (slug)=> {
+    return api()
+    .get("/categorias/slug/"+slug)
+    .then(res=>{
+        return res.data || {}
+    })
+    .catch(error=>{
+        throw error.response
+    })
+}
+
 export const createCategory = (name)=>{
     return api()
     .post("/categorias", {name})

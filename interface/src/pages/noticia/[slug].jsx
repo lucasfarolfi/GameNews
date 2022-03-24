@@ -4,6 +4,7 @@ import Footer from "../../components/footer";
 import { Container } from "react-bootstrap";
 import { getNewsBySlug } from '../../services/news';
 import { getDate } from '../../utils/date';
+import Link from 'next/link';
 
 export async function getServerSideProps(context) {
     try{
@@ -21,7 +22,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home({news, slug, error}){
-    
+
     return(
         <>
             <Header/>
@@ -32,7 +33,7 @@ export default function Home({news, slug, error}){
                     <section className={styles.newsContainer}>
                         <section className={styles.newsHeader}>
                             <h1>{news.title}</h1>
-                            <small>Por {news.user_name}, dia {getDate(news.created_at)} - {news.category_name}</small>
+                            <small>Por {news.user_name}, dia {getDate(news.created_at)} - <span className={styles.categoryBtn}><Link href={"/categorias/"+news.category_slug}>{news.category_name}</Link></span></small>
                         </section>
                         <article className={styles.newsBody}>{news.body}</article>
                     </section>

@@ -3,25 +3,28 @@ const database = require('../database/config')
 const {v4: uuidv4} = require('uuid')
 
 class NewsRepository{
-    async find_and_count_by_query(page, limit_param, search, active){
+    async find_and_count_by_query(page, limit_param, search, active, category){
         try{
-            let count = await database.count().table("news")
+            let count = await database.count().table("news", 'user.name as user_name', 'category.name as category_name')
                 .join('user', 'news.user_id', 'user.id')
                 .join('category', 'news.category_id', 'category.id')
                 .where(builder => active && builder.where('news.is_active', active))
-            .andWhereRaw(`LOWER(news.title) LIKE ?`, `%${search.toLowerCase()}%`)
+                .andWhereRaw(`LOWER(news.title) LIKE ?`, `%${search.toLowerCase()}%`)
+            .andWhereRaw(`LOWER(category.name) LIKE ?`, `%${category.toLowerCase()}%`)
 
             count = parseInt(count[0].count)
 
             let limit = limit_param ? limit_param : count
 
-            let news = await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
+            let news = await database.select(['news.*', 'user.name as user_name',
+                'category.name as category_name','category.slug as category_slug'])
                 .from("news").orderBy('created_at', 'desc')
                 .join('user', 'news.user_id', 'user.id')
                 .join('category', 'news.category_id', 'category.id')
                 .limit(limit).offset((page - 1) * limit)
                 .where(builder => active && builder.where('news.is_active', active))
-            .andWhereRaw(`LOWER(news.title) LIKE ?`, `%${search.toLowerCase()}%`)
+                .andWhereRaw(`LOWER(news.title) LIKE ?`, `%${search.toLowerCase()}%`)
+            .andWhereRaw(`LOWER(category.name) LIKE ?`, `%${category.toLowerCase()}%`)
             
             return {result: news, count};
         }
@@ -33,7 +36,8 @@ class NewsRepository{
     
     async find_by_id(id){
         try{
-            let news = await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
+            let news = await database.select(['news.*', 'user.name as user_name',
+                'category.name as category_name','category.slug as category_slug'])
             .from("news").where('news.id', id)
             .join("user", "news.user_id", "user.id")
             .join("category", "news.category_id", "category.id")
@@ -46,7 +50,8 @@ class NewsRepository{
 
     async find_by_slug(slug){
         try{
-            let news = await await database.select(['news.*', 'user.name as user_name','category.name as category_name'])
+            let news = await await database.select(['news.*', 'user.name as user_name',
+            'category.name as category_name','category.slug as category_slug'])
             .from("news").where('news.slug', slug)
             .join("user", "news.user_id", "user.id")
             .join("category", "news.category_id", "category.id")

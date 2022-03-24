@@ -1,17 +1,17 @@
-import styles from '../../styles/lists.module.scss'
-import Header from "../../components/header";
-import Footer from "../../components/footer";
+import styles from '../../../styles/lists.module.scss'
+import Header from "../../../components/header";
+import Footer from "../../../components/footer";
 import { Container } from "react-bootstrap";
-import { getCategories } from '../../services/categories';
-import CategoryLine from '../../components/categoryLine';
-import Pagination from '../../components/pagination';
+import { getCategories } from '../../../services/categories';
+import CategoryLine from '../../../components/categoryLine';
+import Pagination from '../../../components/pagination';
 
 export async function getServerSideProps(context) {
     try{
-        const categories = await getCategories(1, 15)
+        const categories = await getCategories(context.params.page, 15)
         
         return {
-            props: {categories, currentPage: 1}
+            props: {categories, currentPage: parseInt(context.params.page)}
         };
     } catch(e){
         return {
@@ -20,7 +20,7 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function Categories({categories, currentPage,error}){
+export default function CategoriesPaginated({categories, currentPage,error}){
     
     return(
         <>
@@ -34,10 +34,12 @@ export default function Categories({categories, currentPage,error}){
                             {!error && categories?.result?.map((cat, index)=>{
                                 return <CategoryLine props={cat} />
                             })}
+
+                            {categories.total_pages < currentPage && <p>Nenhum registro encontrado na página atual</p>}
                         </section>
 
                         <section>
-                            <Pagination currentPage={currentPage} total={categories.total_pages} url={"/pagina/"}/>
+                            <Pagination currentPage={currentPage} total={categories.total_pages} url={"/categorias/pagina/"}/>
                         </section>
                     </Container>
                 </main>

@@ -1,6 +1,6 @@
 import styles from "../styles/Home.module.scss"
-import Header from "../components/header/header"
-import Footer from "../components/footer/footer"
+import Header from "../components/header"
+import Footer from "../components/footer"
 import { Container } from "react-bootstrap"
 
 export default function NotFound(){

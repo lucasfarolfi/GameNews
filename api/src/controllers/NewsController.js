@@ -16,10 +16,11 @@ class NewsController{
 
             let active = req.query.active || ''
             let search = req.query.search || ''
+            let category = req.query.category || ''
             let page = req.query.page || 1
             let limit = req.query.limit || undefined 
 
-            let query = await NewsRepository.find_and_count_by_query(page, limit, search, active)
+            let query = await NewsRepository.find_and_count_by_query(page, limit, search, active, category)
 
             limit = !limit ? query.count : limit
 

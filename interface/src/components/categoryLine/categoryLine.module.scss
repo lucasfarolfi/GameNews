@@ -1,0 +1,23 @@
+.category{
+    font-size: calc(1rem + 0.1vw);
+    border-bottom: 2px solid var(--grey);
+    padding: 8px 0;
+    cursor: pointer;
+    transition: color .2s;
+
+    &:first-child{
+        border-top: 2px solid var(--grey);
+    }
+
+    &:hover{
+        color: var(--red);
+    }
+
+    @media(min-width: 556px){
+        padding: 12px 0;
+    }
+
+    @media(min-width: 768px){
+        max-width: 800px;
+    }
+}

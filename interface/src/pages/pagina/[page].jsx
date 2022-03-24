@@ -4,7 +4,7 @@ import Footer from "../../components/footer";
 import { Container } from "react-bootstrap";
 import { getNews } from '../../services/news';
 import NewsBox from '../../components/newsBox';
-import Highlighted from '../../components/highlightedNews/highlightedNews';
+import Highlighted from '../../components/highlightedNews';
 import Pagination from '../../components/pagination';
 
 export async function getServerSideProps(context) {
@@ -22,7 +22,7 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function Home({highlightedNews, lastNews, error, currentPage}){
+export default function HomePaginated({highlightedNews, lastNews, error, currentPage}){
     
     return(
         <>

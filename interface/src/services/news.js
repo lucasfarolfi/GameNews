@@ -1,12 +1,13 @@
 import api from './api'
 
-export const getNews = (active=null, page=null, limit=null, search=null) =>{
+export const getNews = (active=null, page=null, limit=null, search=null, category=null) =>{
     
     let query = {}
     if(active) query['active'] = active
     if(page) query['page'] = page
     if(limit) query['limit'] = limit
     if(search) query['search'] = search
+    if(category) query['category'] = category
     
     return api()
     .get("/noticias", { params: {...query} })
