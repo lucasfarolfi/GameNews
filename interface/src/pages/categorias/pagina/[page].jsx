@@ -32,7 +32,7 @@ export default function CategoriesPaginated({categories, currentPage,error}){
                         <h2>Categorias</h2>
                         <section>
                             {!error && categories?.result?.map((cat, index)=>{
-                                return <CategoryLine props={cat} />
+                                return <CategoryLine props={cat} key={cat.slug}/>
                             })}
 
                             {categories.total_pages < currentPage && <p>Nenhum registro encontrado na página atual</p>}

@@ -56,7 +56,7 @@ export default function Home({highlightedNews, lastNews, error, currentPage}){
                                 <section className={styles.lastNewsContainer}>
                                     {!error && lastNews?.result?.map((nw, index)=>{
                                         return(
-                                            <NewsBox {...nw}/>
+                                            <NewsBox {...nw} key={nw.slug}/>
                                         )
                                     })}
                                 </section>

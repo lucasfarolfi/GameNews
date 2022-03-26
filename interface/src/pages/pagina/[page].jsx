@@ -37,7 +37,7 @@ export default function HomePaginated({highlightedNews, lastNews, error, current
                                     {!error && highlightedNews?.result?.map((nw, index)=>{
                                         if(index >= 0 && index <= 3){
                                             return(
-                                                <Highlighted {...nw}/>
+                                                <Highlighted {...nw} key={nw.slug}/>
                                             )
                                         }
                                         else{
@@ -56,7 +56,7 @@ export default function HomePaginated({highlightedNews, lastNews, error, current
                                 <section className={styles.lastNewsContainer}>
                                     {!error && lastNews?.result?.map((nw, index)=>{
                                         return(
-                                            <NewsBox {...nw}/>
+                                            <NewsBox {...nw} key={nw.slug}/>
                                         )
                                     })}
 
