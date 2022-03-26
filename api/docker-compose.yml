@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    command: yarn dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/usr/app
+      - /usr/app/node_modules
+    environment:
+      PORT: 8080
+      HOST_DB: db
+      DATABASE: postgres
+      USER_DB: postgres
+      PASSWORD_DB: postgres
+
+  db:
+    container_name: 'gamenews-database'
+    image: postgres:14.1-alpine
+    restart: always
+    ports:
+      - '3306:3306'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
